@@ -55,6 +55,12 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Documents\Visual Studio 2017\Projects\Daedalus\Src\Daedalus.ExtensionMethods\bin\Release\Daedalus.ExtensionMethods.dll</HintPath>
     </Reference>
+    <Reference Include="FontAwesome5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
+      <HintPath>..\packages\FontAwesome5.WPF.1.0.4\lib\net40\FontAwesome5.dll</HintPath>
+    </Reference>
+    <Reference Include="FontAwesome5.WPF, Version=1.0.4.60, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
+      <HintPath>..\packages\FontAwesome5.WPF.1.0.4\lib\net40\FontAwesome5.WPF.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="ReactiveUI, Version=8.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ReactiveUI.8.7.2\lib\net461\ReactiveUI.dll</HintPath>
@@ -118,8 +124,11 @@
     <Compile Include="Core\Services\IDownloadQueueService.cs" />
     <Compile Include="Core\Services\IYouTubeDLService.cs" />
     <Compile Include="Core\Services\YouTubeDLService.cs" />
+    <Compile Include="Presentation\MarkupExtensions\EnumExtension+EnumMember.cs" />
+    <Compile Include="Presentation\MarkupExtensions\EnumExtension.cs" />
     <Compile Include="Presentation\Services\CustomWindowManager+WindowConductor.cs" />
     <Compile Include="Presentation\Services\CustomWindowManager.cs" />
+    <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeUtilsViewModel.cs" />
     <Compile Include="Presentation\Views\AddDownloadQueueEntryView.xaml.cs">
       <DependentUpon>AddDownloadQueueEntryView.xaml</DependentUpon>
     </Compile>
@@ -200,7 +209,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Presentation\Composition\Autofac\Modules\" />
+    <Folder Include="Presentation\Converters\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

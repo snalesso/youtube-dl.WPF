@@ -15,6 +15,9 @@ namespace youtube_dl.WPF.Core.Services
 {
     public class YouTubeDLService : IYouTubeDLService
     {
+        public static readonly string RepositoryLink = "https://github.com/rg3/youtube-dl/blob/master/README.md#readme";
+        public static readonly string HomePageLink = "https://rg3.github.io/youtube-dl/";
+
         public YouTubeDLService(string youtubeDLExeFilePath = "youtube-dl\\youtube-dl.exe")
         {
             //if (!File.Exists(youtubeDLExePath))
@@ -35,21 +38,36 @@ namespace youtube_dl.WPF.Core.Services
 
         public IReadOnlyReactiveList<DownloadQueueEntry> DownloadingBatchQueue { get; } = new ReactiveList<DownloadQueueEntry>();
 
-        public async Task<DownloadHistoryEntry> DownloadAsync(DownloadQueueEntry item)
+        public async Task<DownloadHistoryEntry> DownloadAsync(DownloadQueueEntry entry)
         {
-            var configPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.YouTubeDLExeFilePath)) , "config-video.txt");
-            var x = await this.ExecuteYouTubeDL($"--config-location \"{configPath}\" {item.Url}");
+            var configParams = this.BuildDownloadParamsString(entry);
+            var x = await this.ExecuteYouTubeDL($"{configParams} {entry.Url}");
 
             return null;
         }
 
-        public async Task<IReadOnlyList<DownloadHistoryEntry>> DownloadAsync(IReadOnlyList<DownloadQueueEntry> items)
+        // TODO: move to settings class with .BuildParamsString()
+        private string BuildDownloadParamsString(DownloadQueueEntry entry)
         {
-            var configPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.YouTubeDLExeFilePath)), "config-video.txt");
-            var urls = string.Join(" ", items.Select(item => item.Url));
-            var x = await this.ExecuteYouTubeDL($"--config-location {configPath} {urls}");
+            string configFileVariant;
+            switch (entry.DownloadMode)
+            {
+                case DownloadMode.AudioOnly:
+                    configFileVariant = "audio";
+                    break;
+                case DownloadMode.AudioVideo:
+                    configFileVariant = "video";
+                    break;
+                //case DownloadMode.VideoOnly:
+                //    configFileName = "config-video.txt";
+                //    break;
+                default:
+                    throw new NotSupportedException("Format not supported");
+            }
+            var configPath = Path.Combine(Path.GetDirectoryName(Path.GetFullPath(this.YouTubeDLExeFilePath)), $"config-{configFileVariant}.txt");
+            var configParams = $"--config-location \"{configPath}\" {entry.Url}";
 
-            return null;
+            return configParams;
         }
 
         public async Task<bool> UpdateAsync()

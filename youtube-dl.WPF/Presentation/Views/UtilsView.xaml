@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:ViewModels="clr-namespace:youtube_dl.WPF.Presentation.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fa5="http://schemas.fontawesome.com/icons/"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DataContext="{d:DesignInstance IsDesignTimeCreatable=False,
                                      Type={x:Type ViewModels:UtilsViewModel}}"
@@ -11,14 +12,48 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="8" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <Button
             Grid.Column="2"
-            Command="{Binding Update}"
-            Content="Update" />
+            VerticalAlignment="Center"
+            Command="{Binding OpenDownloadsFolder}">
+            <Button.Content>
+                <fa5:SvgAwesome
+                    Width="18"
+                    Height="18"
+                    Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
+                    Icon="Solid_FolderOpen" />
+            </Button.Content>
+        </Button>
+
+        <Button
+            Grid.Column="4"
+            VerticalAlignment="Center"
+            Command="{Binding Update}">
+            <Button.Content>
+                <fa5:SvgAwesome
+                    Width="18"
+                    Height="18"
+                    Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
+                    Icon="Solid_SyncAlt" />
+            </Button.Content>
+        </Button>
+
+        <TextBlock Grid.Column="0" VerticalAlignment="Center">
+            <Hyperlink
+                Command="{Binding NavigateUrl}"
+                CommandParameter=""
+                NavigateUri="https://rg3.github.io/youtube-dl/">
+                <Span>youtube-dl on GitHub</Span>
+                <fa5:FontAwesome Icon="Brands_Github" />
+            </Hyperlink>
+        </TextBlock>
 
     </Grid>
 

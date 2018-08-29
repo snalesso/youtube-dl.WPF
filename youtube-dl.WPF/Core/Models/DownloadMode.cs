@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,7 +10,11 @@ namespace youtube_dl.WPF.Core.Models
     [Flags]
     public enum DownloadMode
     {
-        Audio,
-        Video
+        [Description(nameof(AudioOnly))]
+        AudioOnly = 1,
+        [Description(nameof(VideoOnly))]
+        VideoOnly,
+        [Description(nameof(AudioVideo))]
+        AudioVideo = AudioOnly | VideoOnly
     }
 }

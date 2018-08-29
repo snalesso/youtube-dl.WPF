@@ -15,7 +15,6 @@ namespace youtube_dl.WPF.Core.Services
         IReadOnlyReactiveList<DownloadQueueEntry> DownloadingBatchQueue { get; }
 
         Task<DownloadHistoryEntry> DownloadAsync(DownloadQueueEntry entry);
-        Task<IReadOnlyList<DownloadHistoryEntry>> DownloadAsync(IReadOnlyList<DownloadQueueEntry> entries);
         Task<bool> UpdateAsync();
     }
 }

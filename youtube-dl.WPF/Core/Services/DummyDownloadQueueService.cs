@@ -12,9 +12,9 @@ namespace youtube_dl.WPF.Core.Services
     {
         private DummyDownloadQueueService() {
             var dummyEntries = new [] {
-                new DownloadQueueEntry("https://www.youtube.com/watch?v=1BoJtPp9oQY"),
-                new DownloadQueueEntry("https://www.youtube.com/watch?v=8UVNT4wvIGY"),
-                new DownloadQueueEntry("https://www.youtube.com/watch?v=s31XTrGJchQ"),
+                new DownloadQueueEntry("https://www.youtube.com/watch?v=1BoJtPp9oQY", DownloadMode.AudioOnly),
+                new DownloadQueueEntry("https://www.youtube.com/watch?v=8UVNT4wvIGY", DownloadMode.AudioVideo),
+                new DownloadQueueEntry("https://www.youtube.com/watch?v=s31XTrGJchQ", DownloadMode.VideoOnly),
             };
             this.QueueEntries = new ReactiveList<DownloadQueueEntry>(dummyEntries);
         }

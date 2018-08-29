@@ -3,12 +3,28 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:DesignTimeViewModels="clr-namespace:youtube_dl.WPF.Presentation.ViewModels.DesignTime"
+    xmlns:MarkupExtensions="clr-namespace:youtube_dl.WPF.Presentation.MarkupExtensions"
+    xmlns:Models="clr-namespace:youtube_dl.WPF.Core.Models"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fa5="http://schemas.fontawesome.com/icons/"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DataContext="{d:DesignInstance Type=DesignTimeViewModels:DesignTimeAddDownloadQueueEntryViewModel,
                                      IsDesignTimeCreatable=True}"
-    d:DesignWidth="400"
+    d:DesignWidth="500"
     mc:Ignorable="d">
+
+    <!--<UserControl.Resources>
+        <ObjectDataProvider
+            x:Key="DownloadModes"
+            MethodName="GetValues"
+            ObjectType="{x:Type System:Enum}">
+            <ObjectDataProvider.MethodParameters>
+                <x:Type TypeName="Models:DownloadMode" />
+            </ObjectDataProvider.MethodParameters>
+        </ObjectDataProvider>
+    </UserControl.Resources>-->
+
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
@@ -18,21 +34,65 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="8" />
             <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <Button Command="{Binding PastFromClipboard}" Content="Paste" />
-
-        <TextBox Grid.Column="2" Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" />
-
         <Button
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            Command="{Binding ReadClipboard}">
+            <Button.Content>
+                <fa5:SvgAwesome
+                    Width="18"
+                    Height="18"
+                    Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
+                    Icon="Solid_Paste" />
+            </Button.Content>
+        </Button>
+
+        <TextBox
+            Grid.Column="2"
+            VerticalAlignment="Center"
+            Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" />
+
+        <ComboBox
             Grid.Column="4"
-            Command="{Binding Enqueue}"
-            Content="EnQ" />
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            ItemsSource="{Binding DownloadModes}"
+            SelectedValue="{Binding SelectedDownloadMode, UpdateSourceTrigger=PropertyChanged}" />
 
         <Button
             Grid.Column="6"
-            Command="{Binding EnqueueFromClipboard}"
-            Content="EnQ from CB" />
+            HorizontalAlignment="Center"
+            VerticalAlignment="Stretch"
+            Command="{Binding Enqueue}">
+            <Button.Content>
+                <fa5:SvgAwesome
+                    Width="18"
+                    Height="18"
+                    Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
+                    Icon="Solid_Plus" />
+            </Button.Content>
+        </Button>
+
+        <Button Grid.Column="8" Command="{Binding EnqueueFromClipboard}">
+            <Button.Content>
+                <StackPanel Orientation="Horizontal">
+                    <fa5:SvgAwesome
+                        Width="18"
+                        Height="18"
+                        Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
+                        Icon="Solid_Paste" />
+                    <fa5:SvgAwesome
+                        Width="18"
+                        Height="18"
+                        Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
+                        Icon="Solid_Plus" />
+                </StackPanel>
+            </Button.Content>
+        </Button>
 
     </Grid>
 </UserControl>

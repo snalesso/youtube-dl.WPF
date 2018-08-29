@@ -47,6 +47,10 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+                    <GridViewColumn
+                        Width="Auto"
+                        DisplayMemberBinding="{Binding DownloadModeKey}"
+                        Header="Mode" />
                 </GridView>
             </ListView.View>
         </ListView>

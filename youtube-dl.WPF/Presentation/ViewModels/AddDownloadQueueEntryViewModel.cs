@@ -24,9 +24,9 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         {
             this._downloadQueueService = downloadQueueService ?? throw new ArgumentNullException(nameof(downloadQueueService));
 
-            this.PastFromClipboard = ReactiveCommand.Create(() => Clipboard.GetText(TextDataFormat.Text)).DisposeWith(this._disposables);
-            this.PastFromClipboard.Subscribe(pastedUrl => this.Url = pastedUrl).DisposeWith(this._disposables);
-            this.PastFromClipboard.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.ReadClipboard = ReactiveCommand.Create(() => Clipboard.GetText(TextDataFormat.Text)).DisposeWith(this._disposables);
+            this.ReadClipboard.Subscribe(pastedUrl => this.Url = pastedUrl).DisposeWith(this._disposables);
+            this.ReadClipboard.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
 
             this.EnqueueFromClipboard = ReactiveCommand.Create(
                 () =>
@@ -34,7 +34,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                     var clipboardText = Clipboard.GetText(TextDataFormat.Text);
                     if (!string.IsNullOrWhiteSpace(clipboardText))
                     {
-                        this._downloadQueueService.Enqueue(new DownloadQueueEntry(clipboardText));
+                        this._downloadQueueService.Enqueue(new DownloadQueueEntry(clipboardText, this.SelectedDownloadMode));
                     }
                 }).DisposeWith(this._disposables);
             this.EnqueueFromClipboard.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
@@ -42,7 +42,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             this.Enqueue = ReactiveCommand.Create(
                 () =>
                 {
-                    this._downloadQueueService.Enqueue(new DownloadQueueEntry(this.Url));
+                    this._downloadQueueService.Enqueue(new DownloadQueueEntry(this.Url, this.SelectedDownloadMode));
                     this.Url = null;
                 },
                 this.WhenAnyValue(vm => vm.Url).DistinctUntilChanged().Select(url => !string.IsNullOrEmpty(url))).DisposeWith(this._disposables);
@@ -56,7 +56,20 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             set { this.Set(ref this._url, value); }
         }
 
-        public ReactiveCommand<Unit, string> PastFromClipboard { get; }
+        private readonly IReadOnlyList<DownloadMode> _downloadModes = new[] { DownloadMode.AudioOnly, DownloadMode.AudioVideo };
+        public IReadOnlyList<DownloadMode> DownloadModes
+        {
+            get { return this._downloadModes ?? (this.DownloadModes); }
+        }
+
+        private DownloadMode _selectedDownloadMode = DownloadMode.AudioOnly;
+        public DownloadMode SelectedDownloadMode
+        {
+            get { return this._selectedDownloadMode; }
+            set { this.Set(ref this._selectedDownloadMode, value); }
+        }
+
+        public ReactiveCommand<Unit, string> ReadClipboard { get; }
         public ReactiveCommand<Unit, Unit> EnqueueFromClipboard { get; }
         public ReactiveCommand<Unit, Unit> Enqueue { get; }
     }
