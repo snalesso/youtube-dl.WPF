@@ -9,7 +9,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels.DesignTime
 {
     internal class DesignTimeUtilsViewModel : UtilsViewModel
     {
-        public DesignTimeUtilsViewModel() : base(DummyYouTubeDLService.Instance)
+        public DesignTimeUtilsViewModel() : base(DummyYouTubeDLService.Instance, DummyFileSystemService.Instance)
         {
         }
     }

@@ -25,10 +25,12 @@
             Command="{Binding OpenDownloadsFolder}">
             <Button.Content>
                 <fa5:SvgAwesome
-                    Width="18"
+                    Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                     Height="18"
+                    VerticalAlignment="Center"
                     Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                    Icon="Solid_FolderOpen" />
+                    Icon="Solid_FolderOpen"
+                    Stretch="Uniform" />
             </Button.Content>
         </Button>
 
@@ -38,20 +40,18 @@
             Command="{Binding Update}">
             <Button.Content>
                 <fa5:SvgAwesome
-                    Width="18"
+                    Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                     Height="18"
+                    VerticalAlignment="Center"
                     Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                    Icon="Solid_SyncAlt" />
+                    Icon="Solid_SyncAlt"
+                    Stretch="Uniform" />
             </Button.Content>
         </Button>
 
-        <TextBlock Grid.Column="0" VerticalAlignment="Center">
-            <Hyperlink
-                Command="{Binding NavigateUrl}"
-                CommandParameter=""
-                NavigateUri="https://rg3.github.io/youtube-dl/">
-                <Span>youtube-dl on GitHub</Span>
-                <fa5:FontAwesome Icon="Brands_Github" />
+        <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center">
+            <Hyperlink Command="{Binding NavigateToYoutubeDLRepositoryWebSite}">
+                <Span>youtube-dl repository</Span>
             </Hyperlink>
         </TextBlock>
 

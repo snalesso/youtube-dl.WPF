@@ -11,7 +11,6 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DataContext="{d:DesignInstance Type=DesignTimeViewModels:DesignTimeAddDownloadQueueEntryViewModel,
                                      IsDesignTimeCreatable=True}"
-    d:DesignWidth="500"
     mc:Ignorable="d">
 
     <!--<UserControl.Resources>
@@ -38,21 +37,22 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <Button
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"
-            Command="{Binding ReadClipboard}">
+        <Button VerticalAlignment="Center" Command="{Binding ReadClipboard}">
             <Button.Content>
                 <fa5:SvgAwesome
-                    Width="18"
+                    Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                     Height="18"
+                    VerticalAlignment="Center"
                     Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                    Icon="Solid_Paste" />
+                    Icon="Solid_Paste"
+                    Stretch="Uniform" />
             </Button.Content>
         </Button>
 
         <TextBox
             Grid.Column="2"
+            MinWidth="320"
+            HorizontalAlignment="Stretch"
             VerticalAlignment="Center"
             Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" />
 
@@ -65,31 +65,39 @@
 
         <Button
             Grid.Column="6"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Stretch"
+            VerticalAlignment="Center"
             Command="{Binding Enqueue}">
             <Button.Content>
                 <fa5:SvgAwesome
-                    Width="18"
+                    Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                     Height="18"
+                    VerticalAlignment="Center"
                     Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                    Icon="Solid_Plus" />
+                    Icon="Solid_Plus"
+                    Stretch="Uniform" />
             </Button.Content>
         </Button>
 
-        <Button Grid.Column="8" Command="{Binding EnqueueFromClipboard}">
+        <Button
+            Grid.Column="8"
+            VerticalAlignment="Center"
+            Command="{Binding EnqueueFromClipboard}">
             <Button.Content>
                 <StackPanel Orientation="Horizontal">
                     <fa5:SvgAwesome
-                        Width="18"
+                        Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                         Height="18"
+                        VerticalAlignment="Center"
                         Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                        Icon="Solid_Paste" />
+                        Icon="Solid_Paste"
+                        Stretch="Uniform" />
                     <fa5:SvgAwesome
-                        Width="18"
+                        Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                         Height="18"
+                        VerticalAlignment="Center"
                         Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                        Icon="Solid_Plus" />
+                        Icon="Solid_Plus"
+                        Stretch="Uniform" />
                 </StackPanel>
             </Button.Content>
         </Button>

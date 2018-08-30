@@ -112,6 +112,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\Services\DummyFileSystemService.cs" />
+    <Compile Include="Core\Services\IFileSystemService.cs" />
+    <Compile Include="Core\Services\WindowsFileSystemService.cs" />
     <Compile Include="Presentation\Composition\Autofac\AutofacBootstrapper.cs" />
     <Compile Include="Presentation\Composition\CustomBootstrapperBase`1.cs" />
     <Compile Include="Core\Models\DownloadMode.cs" />

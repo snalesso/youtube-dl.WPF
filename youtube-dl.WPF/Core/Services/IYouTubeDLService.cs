@@ -8,9 +8,12 @@ namespace youtube_dl.WPF.Core.Services
 {
     public interface IYouTubeDLService
     {
+        string OfficialWebsite { get; }
+        string RepositoryWebSite { get; }
+        string DownloadsFolderPath { get; }
+
         bool IsBusy { get; }
         IObservable<bool> WhenIsBusyChanged { get; }
-        string YouTubeDLExeFilePath { get; }
 
         IReadOnlyReactiveList<DownloadQueueEntry> DownloadingBatchQueue { get; }
 
