@@ -29,12 +29,11 @@
                     <StackPanel Orientation="Horizontal">
                         <fa5:SvgAwesome
                             Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                            Height="18"
                             VerticalAlignment="Center"
                             Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
                             Icon="Solid_TrashAlt"
                             Stretch="Uniform" />
-                        <TextBlock Margin="2" VerticalAlignment="Center">Empty</TextBlock>
+                        <!--<TextBlock Margin="2" VerticalAlignment="Center">Empty</TextBlock>-->
                     </StackPanel>
                 </Button.Content>
             </Button>
@@ -47,12 +46,11 @@
                     <StackPanel Orientation="Horizontal">
                         <fa5:SvgAwesome
                             Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                            Height="18"
                             VerticalAlignment="Center"
                             Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
                             Icon="Solid_Times"
                             Stretch="Uniform" />
-                        <TextBlock Margin="2" VerticalAlignment="Center">Remove</TextBlock>
+                        <!--<TextBlock Margin="2" VerticalAlignment="Center">Remove</TextBlock>-->
                     </StackPanel>
                 </Button.Content>
             </Button>

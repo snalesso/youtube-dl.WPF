@@ -8,9 +8,14 @@ namespace youtube_dl.WPF.Core.Services
 {
     public interface IFileSystemService
     {
-        bool OpenFolder(string directoryPath);
-        bool SHowFileInFolder(string selectedFileName);
+        bool OpenFolder(string folderPath, bool createIfNotExists = false);
+        bool ShowFileInFolder(string selectedFileName);
 
-        void NavigateLink(string link);
+        Task<bool> UncompressArchiveAsync(string archiveFilePath, string extractDirectoryPath, Action<long, long, int> progressHandler = null);
+
+        void NavigateUrl(string url);
+
+        Task<bool> DownloadFileAsync(string fileUrl, string saveFilePath);
+        Task<bool> DownloadFileAsync(string fileUrl, string saveFilePath, Action<long, long, int> progressHandler);
     }
 }

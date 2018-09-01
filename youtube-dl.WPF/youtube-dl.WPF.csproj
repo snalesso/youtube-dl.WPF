@@ -61,6 +61,12 @@
     <Reference Include="FontAwesome5.WPF, Version=1.0.4.60, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
       <HintPath>..\packages\FontAwesome5.WPF.1.0.4\lib\net40\FontAwesome5.WPF.dll</HintPath>
     </Reference>
+    <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignColors.1.1.2\lib\net45\MaterialDesignColors.dll</HintPath>
+    </Reference>
+    <Reference Include="MaterialDesignThemes.Wpf, Version=2.4.1.1101, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MaterialDesignThemes.2.4.1.1101\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="ReactiveUI, Version=8.7.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ReactiveUI.8.7.2\lib\net461\ReactiveUI.dll</HintPath>
@@ -113,6 +119,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Core\Services\DummyFileSystemService.cs" />
+    <Compile Include="Core\Services\FFmpegConstants.cs" />
     <Compile Include="Core\Services\IFileSystemService.cs" />
     <Compile Include="Core\Services\WindowsFileSystemService.cs" />
     <Compile Include="Presentation\Composition\Autofac\AutofacBootstrapper.cs" />
@@ -131,9 +138,13 @@
     <Compile Include="Presentation\MarkupExtensions\EnumExtension.cs" />
     <Compile Include="Presentation\Services\CustomWindowManager+WindowConductor.cs" />
     <Compile Include="Presentation\Services\CustomWindowManager.cs" />
+    <Compile Include="Presentation\ViewModels\DependenciesCheckerViewModel.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeUtilsViewModel.cs" />
     <Compile Include="Presentation\Views\AddDownloadQueueEntryView.xaml.cs">
       <DependentUpon>AddDownloadQueueEntryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Views\DependenciesCheckerView.xaml.cs">
+      <DependentUpon>DependenciesCheckerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\Views\DownloadQueueView.xaml.cs">
       <DependentUpon>DownloadQueueView.xaml</DependentUpon>
@@ -155,6 +166,10 @@
     <Compile Include="Presentation\ViewModels\ShellViewModel.cs" />
     <Compile Include="Presentation\ViewModels\UtilsViewModel.cs" />
     <Page Include="Presentation\Views\AddDownloadQueueEntryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\Views\DependenciesCheckerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -202,7 +217,9 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
+    <None Include="packages.config">
+      <SubType>Designer</SubType>
+    </None>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -5,12 +5,19 @@
     xmlns:DesignTimeViewModels="clr-namespace:youtube_dl.WPF.Presentation.ViewModels.DesignTime"
     xmlns:Views="clr-namespace:youtube_dl.WPF.Presentation.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="youtube-dl.WPF"
-    Width="560"
-    SizeToContent="Height"
     d:DataContext="{d:DesignInstance Type=DesignTimeViewModels:DesignTimeShellViewModel,
                                      IsDesignTimeCreatable=True}"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    SizeToContent="WidthAndHeight"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
     WindowStartupLocation="CenterScreen"
     WindowState="Normal"
     mc:Ignorable="d">
@@ -35,7 +42,6 @@
         <Views:UtilsView
             Grid.Row="1"
             Grid.Column="1"
-            HorizontalAlignment="Right"
             DataContext="{Binding UtilsViewModel}" />
 
         <Views:AddDownloadQueueEntryView

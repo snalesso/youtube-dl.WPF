@@ -13,17 +13,24 @@ using youtube_dl.WPF.Core.Models;
 
 namespace youtube_dl.WPF.Core.Services
 {
-    public class YouTubeDLService : IYouTubeDLService
+    public sealed class YouTubeDLService : IYouTubeDLService
     {
+        public const string DirectDownloadUrl = "https://yt-dl.org/latest/youtube-dl.exe";
+        public const string OfficialWebsite = "https://rg3.github.io/youtube-dl/";
+        public const string RepositoryWebSite = "https://github.com/rg3/youtube-dl";
+
+        private readonly IFileSystemService _fileSystemService;
 
         // TODO: settings class
-        public YouTubeDLService(string youtubeDLExeFilePath = "youtube-dl\\youtube-dl.exe")
+        public YouTubeDLService(
+            IFileSystemService fileSystemService,
+            string youtubeDLExeFilePath = "youtube-dl\\youtube-dl.exe")
         {
+            this._fileSystemService = fileSystemService ?? throw new ArgumentNullException(nameof(fileSystemService));
+
             this.ExeFilePath = Path.GetFullPath(youtubeDLExeFilePath);
         }
 
-        public string OfficialWebsite => "https://rg3.github.io/youtube-dl/";
-        public string RepositoryWebSite => "https://github.com/rg3/youtube-dl";
 
         public string ExeFilePath { get; }
         public string DownloadsFolderPath => Path.Combine(Path.GetDirectoryName(this.ExeFilePath), "downloads");
@@ -41,7 +48,7 @@ namespace youtube_dl.WPF.Core.Services
         public async Task<DownloadHistoryEntry> DownloadAsync(DownloadQueueEntry entry)
         {
             var configParams = this.BuildDownloadParamsString(entry);
-            var x = await this.ExecuteYouTubeDL($"{configParams} {entry.Url}");
+            var x = await this.ExecuteYouTubeDLAsync($"{configParams} {entry.Url}");
 
             return null;
         }
@@ -50,15 +57,15 @@ namespace youtube_dl.WPF.Core.Services
         {
             try
             {
-                return (await this.ExecuteYouTubeDL("-u")).ExitCode == 0;
+                return (await this.ExecuteYouTubeDLAsync("-u")).ExitCode == 0;
             }
             catch (FileNotFoundException)
             {
-                return await this.TryDownload();
+                return await this.DownloadAsync();
             }
             catch (Win32Exception)
             {
-                return await this.TryDownload();
+                return await this.DownloadAsync();
             }
             catch (Exception)
             {
@@ -68,7 +75,7 @@ namespace youtube_dl.WPF.Core.Services
             }
         }
 
-        private async Task<ProcessResults> ExecuteYouTubeDL(string arguments)
+        private async Task<ProcessResults> ExecuteYouTubeDLAsync(string arguments)
         {
             this.IsBusy = true;
 
@@ -79,7 +86,7 @@ namespace youtube_dl.WPF.Core.Services
             return res;
         }
 
-        private async Task<bool> TryDownload()
+        private async Task<bool> DownloadAsync()
         {
             this.IsBusy = true;
 
@@ -91,8 +98,9 @@ namespace youtube_dl.WPF.Core.Services
                 {
                     Directory.CreateDirectory(youTubeDLExeDirPath);
                 }
-                await client.DownloadFileTaskAsync("https://yt-dl.org/latest/youtube-dl.exe", this.ExeFilePath);
-                return true;
+                //await client.DownloadFileTaskAsync(YouTubeDLService.DirectDownloadLink, this.ExeFilePath);
+                //return true;
+                return await this._fileSystemService.DownloadFileAsync(YouTubeDLService.DirectDownloadUrl, this.ExeFilePath);
             }
             catch (Exception)
             {

@@ -1,20 +1,18 @@
-﻿using ReactiveUI;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
-using youtube_dl.WPF.Core.Models;
 
 namespace youtube_dl.WPF.Core.Services
 {
-    // TODO: consider making it a base class + dummy extending class
-    public interface IYouTubeDLService
+    public interface IFFmpegService
     {
-        string DownloadsFolderPath { get; }
+        string OfficialWebsite { get; }
+        string DirectDownloadLink { get; }
 
         bool IsBusy { get; }
         IObservable<bool> WhenIsBusyChanged { get; }
-
-        IReadOnlyReactiveList<DownloadQueueEntry> DownloadingBatchQueue { get; }
 
         Task<DownloadHistoryEntry> DownloadAsync(DownloadQueueEntry entry);
         Task<bool> UpdateAsync();

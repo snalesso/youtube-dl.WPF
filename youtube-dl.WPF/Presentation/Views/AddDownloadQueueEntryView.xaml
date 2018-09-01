@@ -51,15 +51,16 @@
 
         <TextBox
             Grid.Column="2"
-            MinWidth="320"
+            MinWidth="330"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Center"
+            VerticalContentAlignment="Center"
             Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" />
 
         <ComboBox
             Grid.Column="4"
             HorizontalAlignment="Center"
-            VerticalAlignment="Center"
+            VerticalAlignment="Stretch"
+            VerticalContentAlignment="Center"
             ItemsSource="{Binding DownloadModes}"
             SelectedValue="{Binding SelectedDownloadMode, UpdateSourceTrigger=PropertyChanged}" />
 
