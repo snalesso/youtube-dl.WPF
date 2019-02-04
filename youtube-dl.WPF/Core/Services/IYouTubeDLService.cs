@@ -10,6 +10,7 @@ namespace youtube_dl.WPF.Core.Services
     public interface IYouTubeDLService
     {
         string DownloadsFolderPath { get; }
+        string ExeFilePath { get; }
 
         bool IsBusy { get; }
         IObservable<bool> WhenIsBusyChanged { get; }

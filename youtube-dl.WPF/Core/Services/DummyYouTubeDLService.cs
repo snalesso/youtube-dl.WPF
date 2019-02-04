@@ -15,6 +15,7 @@ namespace youtube_dl.WPF.Core.Services
         private static DummyYouTubeDLService _instance = new DummyYouTubeDLService();
         public static DummyYouTubeDLService Instance => DummyYouTubeDLService._instance;
 
+        public string ExeFilePath => throw new NotImplementedException();
         public string DownloadsFolderPath => throw new NotImplementedException();
         public string RepositoryWebSite => throw new NotImplementedException();
 
@@ -24,6 +25,7 @@ namespace youtube_dl.WPF.Core.Services
         public IReadOnlyReactiveList<DownloadQueueEntry> DownloadingBatchQueue => throw new NotImplementedException();
 
         public string OfficialWebsite => throw new NotImplementedException();
+
 
         public Task<DownloadHistoryEntry> DownloadAsync(DownloadQueueEntry item)
         {

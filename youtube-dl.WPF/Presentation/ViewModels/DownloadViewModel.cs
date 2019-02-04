@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Caliburn.Micro.ReactiveUI;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
 {
-    public class DownloadViewModel : Screen
+    public class DownloadViewModel : ReactiveScreen
     {
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -35,7 +36,15 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 this._downloadQueueService.QueueEntries.CountChanged.StartWith(this._downloadQueueService.QueueEntries.Count()).Select(count => count > 0))
                 .DisposeWith(this._disposables);
             this.StartDownload.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+
+            this._isDownloading_OAPH = this.WhenAnyObservable(
+                x => x.StartDownload.IsExecuting)
+                .ToProperty(this, x => x.IsDownloading)
+                .DisposeWith(this._disposables);
         }
+
+        private ObservableAsPropertyHelper<bool> _isDownloading_OAPH;
+        public bool IsDownloading => this._isDownloading_OAPH.Value;
 
         public ReactiveCommand<Unit, Unit> StartDownload { get; }
     }

@@ -1,12 +1,71 @@
-﻿<UserControl
+﻿<Window
     x:Class="youtube_dl.WPF.Presentation.Views.DependenciesCheckerView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Daedalus.UI.Converters="clr-namespace:Daedalus.UI.Converters;assembly=Daedalus.UI"
+    xmlns:DesignTimeViewModels="clr-namespace:youtube_dl.WPF.Presentation.ViewModels.DesignTime"
+    xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:youtube_dl.WPF.Presentation.Views"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    MinWidth="350"
+    d:DataContext="{d:DesignInstance Type=DesignTimeViewModels:DesignTimeDependenciesCheckerViewModel,
+                                     IsDesignTimeCreatable=True}"
+    Background="{DynamicResource MaterialDesignPaper}"
+    FontFamily="{DynamicResource MaterialDesignFont}"
+    SizeToContent="WidthAndHeight"
+    TextElement.FontSize="13"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    TextOptions.TextFormattingMode="Ideal"
+    TextOptions.TextRenderingMode="Auto"
+    WindowStartupLocation="CenterScreen"
+    WindowState="Normal"
     mc:Ignorable="d">
-    <Grid />
-</UserControl>
+
+    <Window.Resources>
+        <Daedalus.UI.Converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Daedalus.UI.Converters:BooleanToVisibilityInverter x:Key="BooleanToVisibilityInverter" />
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="8" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="8" />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel
+            Grid.Row="1"
+            Grid.Column="1"
+            Orientation="Vertical">
+            <Grid Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="8" />
+                    <RowDefinition Height="Auto" />
+                </Grid.RowDefinitions>
+
+                <!--<Button Command="{Binding CheckForYouTubeDLUpdates}">Check for youtube-DL updates</Button>-->
+
+                <ProgressBar
+                    Grid.Row="2"
+                    IsIndeterminate="True"
+                    Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+                <TextBlock
+                    Grid.Row="0"
+                    Text="{Binding Status}"
+                    TextAlignment="Center"
+                    Visibility="{Binding IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+            </Grid>
+        </StackPanel>
+
+    </Grid>
+</Window>

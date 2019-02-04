@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -15,8 +16,13 @@ namespace youtube_dl.WPF.Core.Services
         {
             try
             {
-                if (!Directory.Exists(folderPath) && createIfNotExists)
-                    Directory.CreateDirectory(folderPath);
+                if (!Directory.Exists(folderPath))
+                {
+                    if (createIfNotExists)
+                        Directory.CreateDirectory(folderPath);
+                    else
+                        return false;
+                }
 
                 Process.Start($"\"{folderPath}\"");
 
@@ -47,20 +53,39 @@ namespace youtube_dl.WPF.Core.Services
             Process.Start(url);
         }
 
+        public bool UncompressArchive(string archiveFilePath, string extractDirectoryPath, Action<long, long, int> progressHandler = null)
+        {
+            var zipFile = new FastZip();
+
+            try
+            {
+                zipFile.ExtractZip(archiveFilePath, extractDirectoryPath, FastZip.Overwrite.Always, null, null, null, true);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
         public Task<bool> UncompressArchiveAsync(string archiveFilePath, string extractDirectoryPath, Action<long, long, int> progressHandler = null)
         {
             throw new NotImplementedException();
         }
 
-        public Task<bool> DownloadFileAsync(string fileUrl, string saveFilePath)
-        {
-            return this.DownloadFileAsync(fileUrl, saveFilePath, null);
-        }
-
-        public async Task<bool> DownloadFileAsync(string fileUrl, string saveFilePath, Action<long, long, int> progressHandler)
+        public async Task<bool> DownloadFileAsync(string fileUrl, string saveFilePath, bool createDirectoryTree = false, Action<long, long, int> progressHandler = null)
         {
             using (var client = new WebClient())
             {
+                if (createDirectoryTree)
+                {
+                    var saveFileDir = Path.GetDirectoryName(Path.GetFullPath(saveFilePath));
+                    if (!Directory.Exists(saveFileDir))
+                    {
+                        Directory.CreateDirectory(saveFileDir);
+                    }
+                }
+
                 //if (progressHandler != null)
                 //    // TODO: ensure unsubscription is not needed to avoid memory leaks
                 //    client.DownloadProgressChanged += (s, e) => progressHandler(e.TotalBytesToReceive, e.BytesReceived, e.ProgressPercentage);

@@ -21,7 +21,7 @@ namespace youtube_dl.WPF.Presentation.Composition.Autofac
     // TODO: MAKE SURE IDisposables implementations which implement interfaces none of which implements IDisposable GET DISPOSED
     // TODO: separate configuration from DisplayRootViewFor
     // TODO: export shell config
-    internal sealed class AutofacBootstrapper : CustomBootstrapperBase<ShellViewModel>
+    internal sealed class AutofacBootstrapper : CustomBootstrapperBase<DependenciesCheckerViewModel>
     {
         #region ctor
 
@@ -39,7 +39,7 @@ namespace youtube_dl.WPF.Presentation.Composition.Autofac
         #endregion
 
         #region methods
-
+        
         #region lifetime
 
         protected override void OnStartup(object sender, StartupEventArgs e)
@@ -65,23 +65,35 @@ namespace youtube_dl.WPF.Presentation.Composition.Autofac
             // CORE COMPONENTS
 
             builder.Register<IWindowManager>(c => new CustomWindowManager()).InstancePerLifetimeScope();
-            
+
             builder.RegisterType<DownloadQueueService>().As<IDownloadQueueService>().InstancePerLifetimeScope();
             builder.RegisterType<DownloadHistoryService>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<YouTubeDLService>().As<IYouTubeDLService>().InstancePerLifetimeScope();
             builder.RegisterType<WindowsFileSystemService>().As<IFileSystemService>().InstancePerLifetimeScope();
 
             // ViewModels
-            
+
             builder.RegisterType<AddDownloadQueueEntryViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DownloadQueueViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DownloadViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<UtilsViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<ShellViewModel>().AsSelf().InstancePerLifetimeScope();
-            
+            //builder.Register<Func<ShellViewModel>>(ctx =>
+            //{
+            //    var ctxInternal = ctx.Resolve<IComponentContext>();
+            //    return () => new ShellViewModel(
+            //        ctxInternal.Resolve<IYouTubeDLService>(), 
+            //        ctxInternal.Resolve<AddDownloadQueueEntryViewModel>(), 
+            //        ctxInternal.Resolve<DownloadQueueViewModel>(),
+            //        ctxInternal.Resolve<DownloadViewModel>(),
+            //        ctxInternal.Resolve<UtilsViewModel>());
+            //}).AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<DependenciesCheckerViewModel>().AsSelf().InstancePerLifetimeScope();
+
             // Views
 
-            builder.RegisterType<ShellView>().As<IViewFor<ShellViewModel>>().InstancePerLifetimeScope();
+            builder.RegisterType<DependenciesCheckerView>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<ShellView>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
             //builder.RegisterType<DownloadView>().As<IViewFor<DownloadViewModel>>().InstancePerLifetimeScope();
             //builder.RegisterType<ShellView>().As<IViewFor<ShellViewModel>>().InstancePerLifetimeScope();
         }

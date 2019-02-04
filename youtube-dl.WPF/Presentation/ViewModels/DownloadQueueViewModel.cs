@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Caliburn.Micro.ReactiveUI;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
 {
-    public class DownloadQueueViewModel : Screen
+    public class DownloadQueueViewModel : ReactiveScreen
     {
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
@@ -44,7 +45,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         public DownloadQueueEntryViewModel SelectedDownloadQueueEntryViewModel
         {
             get { return this._selectedDownloadQueueEntryViewModel; }
-            set { this.Set(ref this._selectedDownloadQueueEntryViewModel, value); }
+            set { this.RaiseAndSetIfChanged(ref this._selectedDownloadQueueEntryViewModel, value); }
         }
 
         public ReactiveCommand<Unit, Unit> EmptyQueue { get; }

@@ -18,6 +18,7 @@ namespace youtube_dl.WPF.Core.Services
         public const string DirectDownloadUrl = "https://yt-dl.org/latest/youtube-dl.exe";
         public const string OfficialWebsite = "https://rg3.github.io/youtube-dl/";
         public const string RepositoryWebSite = "https://github.com/rg3/youtube-dl";
+        public const string DocumentationWebPage = "https://github.com/rg3/youtube-dl/blob/master/README.md#readme";
 
         private readonly IFileSystemService _fileSystemService;
 
@@ -33,7 +34,7 @@ namespace youtube_dl.WPF.Core.Services
 
 
         public string ExeFilePath { get; }
-        public string DownloadsFolderPath => Path.Combine(Path.GetDirectoryName(this.ExeFilePath), "downloads");
+        public string DownloadsFolderPath => "E:\\Downloads\\youtube-dl"; // Path.Combine(Path.GetDirectoryName(this.ExeFilePath), "downloads");
 
         public bool IsBusy
         {
@@ -57,15 +58,15 @@ namespace youtube_dl.WPF.Core.Services
         {
             try
             {
-                return (await this.ExecuteYouTubeDLAsync("-u")).ExitCode == 0;
+                return (await this.ExecuteYouTubeDLAsync("-U")).ExitCode == 0;
             }
             catch (FileNotFoundException)
             {
-                return await this.DownloadAsync();
+                return await this.DownloadYouTubeDLClientAsync();
             }
             catch (Win32Exception)
             {
-                return await this.DownloadAsync();
+                return await this.DownloadYouTubeDLClientAsync();
             }
             catch (Exception)
             {
@@ -79,14 +80,20 @@ namespace youtube_dl.WPF.Core.Services
         {
             this.IsBusy = true;
 
-            var res = await ProcessEx.RunAsync(this.ExeFilePath, arguments);
+            var psi = new System.Diagnostics.ProcessStartInfo()
+            {
+                Arguments = arguments,
+                FileName = this.ExeFilePath,
+                CreateNoWindow = true
+            };
+            var res = await ProcessEx.RunAsync(psi);
 
             this.IsBusy = false;
 
             return res;
         }
 
-        private async Task<bool> DownloadAsync()
+        private async Task<bool> DownloadYouTubeDLClientAsync()
         {
             this.IsBusy = true;
 
@@ -116,25 +123,32 @@ namespace youtube_dl.WPF.Core.Services
         // TODO: move to settings class with .BuildParamsString()
         private string BuildDownloadParamsString(DownloadQueueEntry entry)
         {
-            string configFileVariant;
+            var paramsList = new List<string>();
+            var dlOptions = new YouTubeDLDownloadOptions();
+
+            dlOptions.PreferFFmpeg = true;
+            dlOptions.FFmpegLocation = ".\\ffmpeg-latest-win64-static\\bin\\ffmpeg.exe"; // TODO: add x86 / x64 support
+
             switch (entry.DownloadMode)
             {
                 case DownloadMode.AudioOnly:
-                    configFileVariant = "audio";
+                    dlOptions.OutputFolderPath = $"E:\\Downloads\\youtube-dl\\audio\\%(title)s -- %(uploader)s -- %(id)s.%(ext)s";
+                    dlOptions.ExtractAudio = true;
+                    dlOptions.AudioFormat = AudioFormat.MP3;
                     break;
+
                 case DownloadMode.AudioVideo:
-                    configFileVariant = "video";
+                    dlOptions.OutputFolderPath = $"E:\\Downloads\\youtube-dl\\video\\%(title)s -- %(uploader)s -- %(id)s.%(ext)s";
+                    dlOptions.VideoFormat = $"bestvideo[height<=?{(int)(VideoResolutionHeight._1080p)}]+bestaudio/best";
                     break;
-                //case DownloadMode.VideoOnly:
-                //    configFileName = "config-video.txt";
-                //    break;
+
                 default:
                     throw new NotSupportedException("Format not supported");
             }
-            var configPath = Path.Combine(Path.GetDirectoryName(this.ExeFilePath), $"config-{configFileVariant}.txt");
-            var configParams = $"--config-location \"{configPath}\" {entry.Url}";
 
-            return configParams;
+            var paramsString = dlOptions.BuildParamsString();
+
+            return paramsString;
         }
     }
 }

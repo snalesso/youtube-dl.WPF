@@ -2,27 +2,37 @@
     x:Class="youtube_dl.WPF.Presentation.Views.DownloadView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Daedalus_UI_Converters="clr-namespace:Daedalus.UI.Converters;assembly=Daedalus.UI"
     xmlns:DesignTimeViewModels="clr-namespace:youtube_dl.WPF.Presentation.ViewModels.DesignTime"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DataContext="{d:DesignInstance Type=DesignTimeViewModels:DesignTimeDownloadViewModel,
                                      IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
-    <StackPanel>
+
+    <UserControl.Resources>
+        <Daedalus_UI_Converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
 
         <Button Command="{Binding StartDownload}" Content="Download" />
 
-        <!--<Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="8" />
-                <ColumnDefinition Width="Auto" />
-            </Grid.ColumnDefinitions>
+        <Grid Grid.Row="1" Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="8" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-            <Button Content="Interrupt download" />
-            <Button Grid.Column="2" Content="Interrupt after this" />
+            <ProgressBar Grid.Row="1" IsIndeterminate="True" />
+        </Grid>
 
-        </Grid>-->
+        <!--<Button Content="Interrupt download" />
+            <Button Grid.Column="2" Content="Interrupt after this" />-->
 
-    </StackPanel>
+    </Grid>
 </UserControl>

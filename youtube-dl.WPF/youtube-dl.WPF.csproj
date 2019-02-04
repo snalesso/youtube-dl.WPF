@@ -55,11 +55,11 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\..\..\Documents\Visual Studio 2017\Projects\Daedalus\Src\Daedalus.ExtensionMethods\bin\Release\Daedalus.ExtensionMethods.dll</HintPath>
     </Reference>
-    <Reference Include="FontAwesome5, Version=1.0.0.0, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
-      <HintPath>..\packages\FontAwesome5.WPF.1.0.4\lib\net40\FontAwesome5.dll</HintPath>
+    <Reference Include="Daedalus.UI">
+      <HintPath>..\..\..\..\..\Documents\Visual Studio 2017\Projects\Daedalus\Src\Daedalus.UI\bin\Release\Daedalus.UI.dll</HintPath>
     </Reference>
-    <Reference Include="FontAwesome5.WPF, Version=1.0.4.60, Culture=neutral, PublicKeyToken=9cfaf01297a008f8, processorArchitecture=MSIL">
-      <HintPath>..\packages\FontAwesome5.WPF.1.0.4\lib\net40\FontAwesome5.WPF.dll</HintPath>
+    <Reference Include="ICSharpCode.SharpZipLib, Version=1.0.0.999, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
+      <HintPath>..\packages\SharpZipLib.1.0.0\lib\net45\ICSharpCode.SharpZipLib.dll</HintPath>
     </Reference>
     <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.1.1.2\lib\net45\MaterialDesignColors.dll</HintPath>
@@ -93,6 +93,7 @@
     <Reference Include="System.Reactive, Version=4.0.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reactive.4.0.0\lib\net46\System.Reactive.dll</HintPath>
     </Reference>
+    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net461\System.ValueTuple.dll</HintPath>
     </Reference>
@@ -118,10 +119,20 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\Models\AudioFormat.cs" />
+    <Compile Include="Core\Models\DownloadOptions.cs" />
+    <Compile Include="Core\Models\Settings.cs" />
+    <Compile Include="Core\Models\VideoResolutionHeight.cs" />
+    <Compile Include="Core\Models\YouTubeDLDownloadOptions.cs" />
     <Compile Include="Core\Services\DummyFileSystemService.cs" />
     <Compile Include="Core\Services\FFmpegConstants.cs" />
     <Compile Include="Core\Services\IFileSystemService.cs" />
+    <Compile Include="Core\Services\ISettingsService.cs" />
     <Compile Include="Core\Services\WindowsFileSystemService.cs" />
+    <Compile Include="Presentation\Caliburn.Micro.ReactiveUI\ReactivePropertyChangedBase.cs" />
+    <Compile Include="Presentation\Caliburn.Micro.ReactiveUI\ReactiveScreen.cs" />
+    <Compile Include="Presentation\Caliburn.Micro.ReactiveUI\ReactiveViewAware.cs" />
+    <Compile Include="Presentation\Caliburn.Micro.ReactiveUI\WeakValueDictionary.cs" />
     <Compile Include="Presentation\Composition\Autofac\AutofacBootstrapper.cs" />
     <Compile Include="Presentation\Composition\CustomBootstrapperBase`1.cs" />
     <Compile Include="Core\Models\DownloadMode.cs" />
@@ -139,6 +150,7 @@
     <Compile Include="Presentation\Services\CustomWindowManager+WindowConductor.cs" />
     <Compile Include="Presentation\Services\CustomWindowManager.cs" />
     <Compile Include="Presentation\ViewModels\DependenciesCheckerViewModel.cs" />
+    <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeDependenciesCheckerViewModel.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeUtilsViewModel.cs" />
     <Compile Include="Presentation\Views\AddDownloadQueueEntryView.xaml.cs">
       <DependentUpon>AddDownloadQueueEntryView.xaml</DependentUpon>

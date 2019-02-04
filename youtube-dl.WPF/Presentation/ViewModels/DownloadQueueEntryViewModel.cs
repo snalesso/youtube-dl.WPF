@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using Caliburn.Micro.ReactiveUI;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
 {
-    public class DownloadQueueEntryViewModel
+    public class DownloadQueueEntryViewModel : ReactiveScreen
     {
         //private readonly DownloadQueueService _downloadQueueService;
 

@@ -31,11 +31,16 @@ namespace youtube_dl.WPF.Core.Services
             throw new NotImplementedException();
         }
 
-        public Task<bool> DownloadFileAsync(string link, string saveFilePath)
+        //public Task<bool> DownloadFileAsync(string link, string saveFilePath, bool createDirectoryTree = false)
+        //{
+        //    throw new NotImplementedException();
+        //}
+        public Task<bool> DownloadFileAsync(string link, string saveFilePath, bool createDirectoryTree = false,  Action<long, long, int> progressHandler=null)
         {
             throw new NotImplementedException();
         }
-        public Task<bool> DownloadFileAsync(string link, string saveFilePath,  Action<long, long, int> progressHandler)
+
+        public bool UncompressArchive(string archiveFilePath, string extractDirectoryPath, Action<long, long, int> progressHandler = null)
         {
             throw new NotImplementedException();
         }

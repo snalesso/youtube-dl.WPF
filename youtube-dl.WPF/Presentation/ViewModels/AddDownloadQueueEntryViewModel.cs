@@ -1,4 +1,5 @@
 ﻿using Caliburn.Micro;
+using Caliburn.Micro.ReactiveUI;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
 {
-    public class AddDownloadQueueEntryViewModel : Screen
+    public class AddDownloadQueueEntryViewModel : ReactiveScreen
     {
         private readonly IDownloadQueueService _downloadQueueService;
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
@@ -53,7 +54,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         public string Url
         {
             get { return this._url; }
-            set { this.Set(ref this._url, value); }
+            set { this.RaiseAndSetIfChanged(ref this._url, value); }
         }
 
         private readonly IReadOnlyList<DownloadMode> _downloadModes = new[] { DownloadMode.AudioOnly, DownloadMode.AudioVideo };
@@ -66,7 +67,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         public DownloadMode SelectedDownloadMode
         {
             get { return this._selectedDownloadMode; }
-            set { this.Set(ref this._selectedDownloadMode, value); }
+            set { this.RaiseAndSetIfChanged(ref this._selectedDownloadMode, value); }
         }
 
         public ReactiveCommand<Unit, string> ReadClipboard { get; }

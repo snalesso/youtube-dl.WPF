@@ -2,6 +2,7 @@
     x:Class="youtube_dl.WPF.Presentation.Views.UtilsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:ViewModels="clr-namespace:youtube_dl.WPF.Presentation.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:fa5="http://schemas.fontawesome.com/icons/"
@@ -18,19 +19,17 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="8" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="8" />
-            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
         <Button VerticalAlignment="Center" Command="{Binding OpenDownloadsFolder}">
             <Button.Content>
-                <fa5:SvgAwesome
+                <MaterialDesign:PackIcon
                     Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                    Height="18"
+                    Height="Auto"
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                    Icon="Solid_FolderOpen"
-                    Stretch="Uniform" />
+                    Kind="FolderDownload" />
             </Button.Content>
         </Button>
 
@@ -38,8 +37,8 @@
             Grid.Column="3"
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
-            <Hyperlink Command="{Binding NavigateToYoutubeDLRepositoryWebSite}">
-                <Span>youtube-dl repository</Span>
+            <Hyperlink Command="{Binding NavigateToYoutubeDLDocumentationWebPage}">
+                <Span>youtube-dl docs</Span>
             </Hyperlink>
         </TextBlock>
 
@@ -48,28 +47,13 @@
             VerticalAlignment="Center"
             Command="{Binding Update}">
             <Button.Content>
-                <fa5:SvgAwesome
+                <MaterialDesign:PackIcon
                     Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                    Height="18"
+                    Height="Auto"
+                    HorizontalAlignment="Center"
                     VerticalAlignment="Center"
                     Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                    Icon="Solid_SyncAlt"
-                    Stretch="Uniform" />
-            </Button.Content>
-        </Button>
-
-        <Button
-            Grid.Column="7"
-            VerticalAlignment="Center"
-            Command="{Binding CheckFFmpeg}">
-            <Button.Content>
-                <fa5:SvgAwesome
-                    Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                    Height="18"
-                    VerticalAlignment="Center"
-                    Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                    Icon="Solid_Music"
-                    Stretch="Uniform" />
+                    Kind="Refresh" />
             </Button.Content>
         </Button>
 
