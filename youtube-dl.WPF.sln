@@ -5,6 +5,10 @@ VisualStudioVersion = 15.0.28010.2003
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "youtube-dl.WPF", "youtube-dl.WPF\youtube-dl.WPF.csproj", "{CD8C7AFE-EA0F-4BA6-AD11-9BE668CAED2E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.UI", "..\..\..\..\..\Documents\Visual Studio 2017\Projects\Daedalus\Src\Daedalus.UI\Daedalus.UI.csproj", "{8008609E-8813-4A12-B385-431B25BCBBF1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Daedalus.ExtensionMethods", "..\..\..\..\..\Documents\Visual Studio 2017\Projects\Daedalus\Src\Daedalus.ExtensionMethods\Daedalus.ExtensionMethods.csproj", "{3358412E-6CA8-462B-883B-0A640218A4A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{CD8C7AFE-EA0F-4BA6-AD11-9BE668CAED2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CD8C7AFE-EA0F-4BA6-AD11-9BE668CAED2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CD8C7AFE-EA0F-4BA6-AD11-9BE668CAED2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8008609E-8813-4A12-B385-431B25BCBBF1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8008609E-8813-4A12-B385-431B25BCBBF1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8008609E-8813-4A12-B385-431B25BCBBF1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8008609E-8813-4A12-B385-431B25BCBBF1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3358412E-6CA8-462B-883B-0A640218A4A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3358412E-6CA8-462B-883B-0A640218A4A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3358412E-6CA8-462B-883B-0A640218A4A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3358412E-6CA8-462B-883B-0A640218A4A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
