@@ -9,7 +9,7 @@ namespace youtube_dl.WPF.Core.Models
             DownloadMode downloadMode)
         {
             if (url == null) throw new ArgumentNullException(nameof(url));
-            if (url == "") throw new ArgumentException(nameof(url));
+            if (url == string.Empty) throw new ArgumentException(nameof(url));
 
             this.Url = url;
             this.DownloadMode = downloadMode;

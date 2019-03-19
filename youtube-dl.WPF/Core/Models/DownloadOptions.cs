@@ -6,7 +6,13 @@ using System.Threading.Tasks;
 
 namespace youtube_dl.WPF.Core.Models
 {
-    class DownloadOptions
+    public abstract class DownloadOptions
     {
+        public abstract DownloadMode DownloadMode { get; }
+    }
+
+    public class AudioDownloadOptions : DownloadOptions
+    {
+        public override DownloadMode DownloadMode => DownloadMode.AudioOnly;
     }
 }
