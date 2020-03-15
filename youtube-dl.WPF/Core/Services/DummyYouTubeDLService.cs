@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DynamicData;
 using ReactiveUI;
 using youtube_dl.WPF.Core.Models;
 
@@ -22,7 +23,7 @@ namespace youtube_dl.WPF.Core.Services
         public bool IsBusy => throw new NotImplementedException();
         public IObservable<bool> WhenIsBusyChanged => throw new NotImplementedException();
         
-        public IReadOnlyReactiveList<DownloadQueueEntry> DownloadingBatchQueue => throw new NotImplementedException();
+        public IObservableList<DownloadQueueEntry> DownloadingBatchQueue => throw new NotImplementedException();
 
         public string OfficialWebsite => throw new NotImplementedException();
 

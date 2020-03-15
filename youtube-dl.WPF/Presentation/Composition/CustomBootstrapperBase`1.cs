@@ -15,7 +15,7 @@ namespace youtube_dl.WPF.Presentation.Composition
 
         protected IContainer Container { get; private set; }
 
-        protected IDictionary<string, object> RootViewDIsplaySettings { get; set; }
+        protected IDictionary<string, object> RootViewDisplaySettings { get; set; }
 
         #endregion
 
@@ -74,7 +74,7 @@ namespace youtube_dl.WPF.Presentation.Composition
         {
             base.OnStartup(sender, e);
 
-            this.DisplayRootViewFor<TShellViewModel>(this.RootViewDIsplaySettings);
+            this.DisplayRootViewFor<TShellViewModel>(this.RootViewDisplaySettings);
         }
 
         #endregion

@@ -17,11 +17,14 @@
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="8" />
             <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="8" />
-            <ColumnDefinition Width="Auto" />
+            <!--<ColumnDefinition Width="8" />
+            <ColumnDefinition Width="Auto" />-->
         </Grid.ColumnDefinitions>
 
-        <Button VerticalAlignment="Center" Command="{Binding OpenDownloadsFolder}">
+        <Button
+            VerticalAlignment="Center"
+            Command="{Binding OpenDownloadsFolder}"
+            ToolTip="Open downloads folder">
             <Button.Content>
                 <MaterialDesign:PackIcon
                     Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
@@ -42,7 +45,7 @@
             </Hyperlink>
         </TextBlock>
 
-        <Button
+        <!--<Button
             Grid.Column="5"
             VerticalAlignment="Center"
             Command="{Binding Update}">
@@ -55,7 +58,7 @@
                     Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
                     Kind="Refresh" />
             </Button.Content>
-        </Button>
+        </Button>-->
 
     </Grid>
 

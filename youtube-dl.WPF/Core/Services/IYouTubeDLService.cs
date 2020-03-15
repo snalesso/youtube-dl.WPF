@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using DynamicData;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace youtube_dl.WPF.Core.Services
         bool IsBusy { get; }
         IObservable<bool> WhenIsBusyChanged { get; }
 
-        IReadOnlyReactiveList<DownloadQueueEntry> DownloadingBatchQueue { get; }
+        IObservableList<DownloadQueueEntry> DownloadingBatchQueue { get; }
 
         Task<DownloadHistoryEntry> DownloadAsync(DownloadQueueEntry entry);
         Task<bool> UpdateAsync();

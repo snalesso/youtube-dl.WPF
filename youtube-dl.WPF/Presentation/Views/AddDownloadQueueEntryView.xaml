@@ -2,6 +2,7 @@
     x:Class="youtube_dl.WPF.Presentation.Views.AddDownloadQueueEntryView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Converters="clr-namespace:youtube_dl.WPF.Presentation.Converters"
     xmlns:DesignTimeViewModels="clr-namespace:youtube_dl.WPF.Presentation.ViewModels.DesignTime"
     xmlns:MarkupExtensions="clr-namespace:youtube_dl.WPF.Presentation.MarkupExtensions"
     xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
@@ -14,16 +15,17 @@
                                      IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
 
-    <!--<UserControl.Resources>
-        <ObjectDataProvider
+    <UserControl.Resources>
+        <!--<ObjectDataProvider
             x:Key="DownloadModes"
             MethodName="GetValues"
             ObjectType="{x:Type System:Enum}">
             <ObjectDataProvider.MethodParameters>
                 <x:Type TypeName="Models:DownloadMode" />
             </ObjectDataProvider.MethodParameters>
-        </ObjectDataProvider>
-    </UserControl.Resources>-->
+        </ObjectDataProvider>-->
+        <Converters:DownloadModeToPackIconKindConverter x:Key="DownloadModeToPackIconKindConverter" />
+    </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
@@ -34,11 +36,15 @@
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="8" />
             <ColumnDefinition Width="Auto" />
-            <!--<ColumnDefinition Width="8" />
-            <ColumnDefinition Width="Auto" />-->
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <Button VerticalAlignment="Center" Command="{Binding ReadClipboard}">
+        <Button
+            Grid.Column="0"
+            VerticalAlignment="Center"
+            Command="{Binding ReadClipboard}"
+            ToolTip="Paste copied text">
             <Button.Content>
                 <MaterialDesign:PackIcon
                     Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
@@ -52,23 +58,71 @@
 
         <TextBox
             Grid.Column="2"
-            MinWidth="330"
+            MinWidth="380"
             HorizontalAlignment="Stretch"
             VerticalContentAlignment="Center"
+            AcceptsReturn="False"
+            AcceptsTab="False"
+            MaxLines="1"
             Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" />
 
-        <ComboBox Width="90"
+        <ComboBox
             Grid.Column="4"
             HorizontalAlignment="Center"
-            VerticalAlignment="Stretch"
             VerticalContentAlignment="Center"
             ItemsSource="{Binding DownloadModes}"
-            SelectedValue="{Binding SelectedDownloadMode, UpdateSourceTrigger=PropertyChanged}" />
+            SelectedValue="{Binding SelectedDownloadMode, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, FallbackValue={x:Static Models:DownloadMode.AudioOnly}}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <MaterialDesign:PackIcon
+                        Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                        Height="Auto"
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Kind="{Binding ., Converter={StaticResource DownloadModeToPackIconKindConverter}, Mode=OneTime}" />
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+            <!--<ComboBox.Items>
+                <ComboBoxItem
+                    Content="{x:Static Models:DownloadMode.AudioOnly}"
+                    DataContext="{x:Static Models:DownloadMode.AudioOnly}"
+                    Tag="{x:Static Models:DownloadMode.AudioOnly}">
+                    <ComboBoxItem.Template>
+                        <ControlTemplate>
+                            <MaterialDesign:PackIcon
+                                Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                                Height="Auto"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Kind="Music" />
+                        </ControlTemplate>
+                    </ComboBoxItem.Template>
+                </ComboBoxItem>
+                <ComboBoxItem
+                    Content="{x:Static Models:DownloadMode.AudioVideo}"
+                    DataContext="{x:Static Models:DownloadMode.AudioVideo}"
+                    Tag="{x:Static Models:DownloadMode.AudioVideo}">
+                    <ComboBoxItem.Template>
+                        <ControlTemplate>
+                            <MaterialDesign:PackIcon
+                                Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                                Height="Auto"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                Kind="Video" />
+                        </ControlTemplate>
+                    </ComboBoxItem.Template>
+                </ComboBoxItem>
+            </ComboBox.Items>-->
+        </ComboBox>
 
         <Button
             Grid.Column="6"
             VerticalAlignment="Center"
-            Command="{Binding Enqueue}">
+            Command="{Binding Enqueue}"
+            ToolTip="Enqueue URL with selected options">
             <Button.Content>
                 <MaterialDesign:PackIcon
                     Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
@@ -80,10 +134,11 @@
             </Button.Content>
         </Button>
 
-        <!--<Button
+        <Button
             Grid.Column="8"
             VerticalAlignment="Center"
-            Command="{Binding EnqueueFromClipboard}">
+            Command="{Binding EnqueueFromClipboard}"
+            ToolTip="Enqueue URL from clipboard using selected options">
             <Button.Content>
                 <StackPanel Orientation="Horizontal">
                     <MaterialDesign:PackIcon
@@ -102,7 +157,7 @@
                         Kind="Plus" />
                 </StackPanel>
             </Button.Content>
-        </Button>-->
+        </Button>
 
     </Grid>
 </UserControl>

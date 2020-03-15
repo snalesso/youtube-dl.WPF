@@ -3,6 +3,7 @@ using Caliburn.Micro;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
@@ -39,7 +40,7 @@ namespace youtube_dl.WPF.Presentation.Composition.Autofac
         #endregion
 
         #region methods
-        
+
         #region lifetime
 
         protected override void OnStartup(object sender, StartupEventArgs e)
@@ -88,11 +89,14 @@ namespace youtube_dl.WPF.Presentation.Composition.Autofac
             //        ctxInternal.Resolve<DownloadViewModel>(),
             //        ctxInternal.Resolve<UtilsViewModel>());
             //}).AsSelf().InstancePerLifetimeScope();
-            builder.RegisterType<DependenciesCheckerViewModel>().AsSelf().InstancePerLifetimeScope();
 
+            //if (!Debugger.IsAttached)
+            //{
+                builder.RegisterType<DependenciesCheckerViewModel>().AsSelf().InstancePerLifetimeScope();
+                builder.RegisterType<DependenciesCheckerView>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+            //}
             // Views
 
-            builder.RegisterType<DependenciesCheckerView>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
             builder.RegisterType<ShellView>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
             //builder.RegisterType<DownloadView>().As<IViewFor<DownloadViewModel>>().InstancePerLifetimeScope();
             //builder.RegisterType<ShellView>().As<IViewFor<ShellViewModel>>().InstancePerLifetimeScope();

@@ -25,9 +25,10 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         {
             this._downloadQueueService = downloadQueueService ?? throw new ArgumentNullException(nameof(downloadQueueService));
 
-            this.ReadClipboard = ReactiveCommand.Create(() => Clipboard.GetText(TextDataFormat.Text)).DisposeWith(this._disposables);
+            this.ReadClipboard = ReactiveCommand.Create(() => Clipboard.GetText(TextDataFormat.Text));
             this.ReadClipboard.Subscribe(pastedUrl => this.Url = pastedUrl).DisposeWith(this._disposables);
             this.ReadClipboard.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.ReadClipboard.DisposeWith(this._disposables);
 
             this.EnqueueFromClipboard = ReactiveCommand.Create(
                 () =>
@@ -35,19 +36,21 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                     var clipboardText = Clipboard.GetText(TextDataFormat.Text);
                     if (!string.IsNullOrWhiteSpace(clipboardText))
                     {
-                        this._downloadQueueService.Enqueue(new DownloadQueueEntry(clipboardText, this.SelectedDownloadMode));
+                        this._downloadQueueService.Enqueue(new DownloadQueueEntry(clipboardText, new DownloadOptions(this.SelectedDownloadMode)));
                     }
-                }).DisposeWith(this._disposables);
+                });
             this.EnqueueFromClipboard.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.EnqueueFromClipboard.DisposeWith(this._disposables); 
 
             this.Enqueue = ReactiveCommand.Create(
                 () =>
                 {
-                    this._downloadQueueService.Enqueue(new DownloadQueueEntry(this.Url, this.SelectedDownloadMode));
+                    this._downloadQueueService.Enqueue(new DownloadQueueEntry(this.Url, new DownloadOptions(this.SelectedDownloadMode)));
                     this.Url = null;
                 },
-                this.WhenAnyValue(vm => vm.Url).DistinctUntilChanged().Select(url => !string.IsNullOrEmpty(url))).DisposeWith(this._disposables);
+                this.WhenAnyValue(vm => vm.Url).DistinctUntilChanged().Select(url => !string.IsNullOrEmpty(url)));
             this.Enqueue.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.Enqueue.DisposeWith(this._disposables);
         }
 
         private string _url;

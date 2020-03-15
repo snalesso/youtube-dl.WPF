@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using DynamicData;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,8 +13,8 @@ namespace youtube_dl.WPF.Core.Services
     {
         public DownloadHistoryService() { }
 
-        private readonly ReactiveList<DownloadHistoryEntry> _historyEntries = new ReactiveList<DownloadHistoryEntry>();
-        public IReadOnlyReactiveList<DownloadHistoryEntry> HistoryEntries => this._historyEntries;
+        private readonly ISourceList<DownloadHistoryEntry> _historyEntries = new SourceList<DownloadHistoryEntry>();
+        public IObservableList<DownloadHistoryEntry> HistoryEntries => this._historyEntries;
 
         public void Log(DownloadHistoryEntry entry)
         {
@@ -27,7 +28,7 @@ namespace youtube_dl.WPF.Core.Services
 
         public void Remove(DownloadHistoryEntry entry)
         {
-            if (this._historyEntries.Contains(entry))
+            if (this._historyEntries.Items.Contains(entry))
             {
                 this._historyEntries.Remove(entry);
             }

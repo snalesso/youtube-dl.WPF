@@ -1,12 +1,12 @@
 ﻿using System.Collections.Generic;
-using ReactiveUI;
+using DynamicData;
 using youtube_dl.WPF.Core.Models;
 
 namespace youtube_dl.WPF.Core.Services
 {
     public interface IDownloadQueueService
     {
-        IReadOnlyReactiveList<DownloadQueueEntry> QueueEntries { get; }
+        IObservableList<DownloadQueueEntry> QueueEntries { get; }
 
         DownloadQueueEntry Dequeue();
         void Enqueue(DownloadQueueEntry item);

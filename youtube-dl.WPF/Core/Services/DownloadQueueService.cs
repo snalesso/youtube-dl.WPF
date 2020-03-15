@@ -10,6 +10,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using youtube_dl.WPF.Core.Models;
+using DynamicData;
 
 namespace youtube_dl.WPF.Core.Services
 {
@@ -17,13 +18,13 @@ namespace youtube_dl.WPF.Core.Services
     {
         public DownloadQueueService() { }
 
-        private readonly ReactiveList<DownloadQueueEntry> _queueEntries = new ReactiveList<DownloadQueueEntry>(
+        private readonly ISourceList<DownloadQueueEntry> _queueEntries = new SourceList<DownloadQueueEntry>(
             //new[]
             //{
             //    new DownloadQueueEntry(@"")
             //}
             );
-        public IReadOnlyReactiveList<DownloadQueueEntry> QueueEntries => this._queueEntries;
+        public IObservableList<DownloadQueueEntry> QueueEntries => this._queueEntries;
 
         public void Enqueue(DownloadQueueEntry entry)
         {
@@ -37,15 +38,19 @@ namespace youtube_dl.WPF.Core.Services
 
         public DownloadQueueEntry Dequeue()
         {
-            var first = this._queueEntries.ElementAtOrDefault(0);
-            if (first != null) this._queueEntries.RemoveAt(0);
+            var first = this._queueEntries.Items.ElementAtOrDefault(0);
+
+            if (first != null)
+                this._queueEntries.RemoveAt(0);
+
             return first;
         }
 
         public DownloadQueueEntry Extract(DownloadQueueEntry entry)
         {
-            if (this._queueEntries.Contains(entry))
+            if (this._queueEntries.Items.Contains(entry))
                 this._queueEntries.Remove(entry);
+
             return entry;
         }
 

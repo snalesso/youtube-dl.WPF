@@ -34,13 +34,16 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 return await this._youTubeDLService.UpdateAsync();
             }, outputScheduler: RxApp.MainThreadScheduler);
             this.UpdateDependencies.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.UpdateDependencies.DisposeWith(this._disposables);
 
             this.OpenDownloadsFolder = ReactiveCommand.Create(() => this._fileSystemService.OpenFolder(this._youTubeDLService.DownloadsFolderPath));
             this.OpenDownloadsFolder.ThrownExceptions.Subscribe(ex => Console.WriteLine($"++ThrownExceptions: {ex.ToString()}")).DisposeWith(this._disposables);
             this.OpenDownloadsFolder.Where(couldOpenFolder => !couldOpenFolder).Subscribe(couldOpenFolder => Console.WriteLine("Downloads folder not found"));
+            this.OpenDownloadsFolder.DisposeWith(this._disposables);
 
             this.NavigateToYoutubeDLDocumentationWebPage = ReactiveCommand.Create(() => this._fileSystemService.NavigateUrl(YouTubeDLService.DocumentationWebPage));
             this.NavigateToYoutubeDLDocumentationWebPage.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.NavigateToYoutubeDLDocumentationWebPage.DisposeWith(this._disposables);
         }
 
         public ReactiveCommand<Unit, bool> UpdateDependencies { get; }

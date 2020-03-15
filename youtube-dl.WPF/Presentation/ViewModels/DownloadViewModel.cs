@@ -1,15 +1,10 @@
-﻿using Caliburn.Micro;
-using Caliburn.Micro.ReactiveUI;
-using ReactiveUI;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using youtube_dl.WPF.Core.Models;
+using Caliburn.Micro.ReactiveUI;
+using ReactiveUI;
 using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
@@ -33,12 +28,11 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 {
                     await this._youTubeDLService.DownloadAsync(this._downloadQueueService.Dequeue());
                 },
-                this._downloadQueueService.QueueEntries.CountChanged.StartWith(this._downloadQueueService.QueueEntries.Count()).Select(count => count > 0))
-                .DisposeWith(this._disposables);
+                this._downloadQueueService.QueueEntries.CountChanged.Select(count => count != 0));
             this.StartDownload.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.StartDownload.DisposeWith(this._disposables);
 
-            this._isDownloading_OAPH = this.WhenAnyObservable(
-                x => x.StartDownload.IsExecuting)
+            this._isDownloading_OAPH = this.WhenAnyObservable(x => x.StartDownload.IsExecuting)
                 .ToProperty(this, x => x.IsDownloading)
                 .DisposeWith(this._disposables);
         }

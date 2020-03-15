@@ -3,6 +3,7 @@ using Caliburn.Micro.ReactiveUI;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reactive;
@@ -44,6 +45,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 return isYTDLPresent;
             });
             this.CheckForYouTubeDLPresence.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.CheckForYouTubeDLPresence.DisposeWith(this._disposables);
 
             this.DownloadYouTubeDL = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -61,6 +63,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 return downloaded;
             });
             this.DownloadYouTubeDL.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.CheckForYouTubeDLPresence.DisposeWith(this._disposables);
 
             this.TryUpdateYouTubeDL = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -72,6 +75,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 return didUpdate;
             });
             this.TryUpdateYouTubeDL.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.TryUpdateYouTubeDL.DisposeWith(this._disposables);
 
             this.CheckForFFmpegPresence = ReactiveCommand.Create(() =>
             {
@@ -87,6 +91,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 return isFFmpegPresent;
             });
             this.CheckForFFmpegPresence.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.CheckForFFmpegPresence.DisposeWith(this._disposables);
 
             this.DownloadFFmpeg = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -111,6 +116,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 return extracted;
             });
             this.DownloadFFmpeg.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
+            this.DownloadFFmpeg.DisposeWith(this._disposables);
 
             this._isBusy_OAPH = this.WhenAnyObservable(
                 x => x.CheckForYouTubeDLPresence.IsExecuting,
@@ -164,25 +170,31 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         {
             base.OnViewLoaded(view);
 
-            var isYTDLPresent = await this.CheckForYouTubeDLPresence.Execute();
-            if (isYTDLPresent)
-                await this.TryUpdateYouTubeDL.Execute();
-            else
-                isYTDLPresent = await this.DownloadYouTubeDL.Execute();
-
-            var isFFmpegPresent = await this.CheckForFFmpegPresence.Execute();
-            if (!isFFmpegPresent)
-                isFFmpegPresent = await this.DownloadFFmpeg.Execute();
-
-            if (isYTDLPresent && isFFmpegPresent)
+            if (!Debugger.IsAttached)
             {
-                this._windowManager.ShowWindow(this._shellViewModelFactory.Invoke());
-                this.TryClose();
+                var isYTDLPresent = await this.CheckForYouTubeDLPresence.Execute();
+                if (isYTDLPresent)
+                    await this.TryUpdateYouTubeDL.Execute();
+                else
+                    isYTDLPresent = await this.DownloadYouTubeDL.Execute();
+
+                var isFFmpegPresent = await this.CheckForFFmpegPresence.Execute();
+                if (!isFFmpegPresent)
+                    isFFmpegPresent = await this.DownloadFFmpeg.Execute();
+
+                if (!isYTDLPresent || !isFFmpegPresent)
+                {
+                    throw new Exception("WHAT?");
+                }
             }
-            else
-            {
-                throw new Exception("WHAT?");
-            }
+
+            this.SwitchToClient();
+        }
+
+        private void SwitchToClient()
+        {
+            this._windowManager.ShowWindow(this._shellViewModelFactory.Invoke());
+            this.TryClose();
         }
 
         //public override void TryClose(bool? dialogResult = null)

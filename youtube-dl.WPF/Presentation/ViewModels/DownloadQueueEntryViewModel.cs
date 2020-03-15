@@ -31,8 +31,12 @@ namespace youtube_dl.WPF.Presentation.ViewModels
 
         public DownloadQueueEntry DownloadQueueEntry { get; }
 
+        public DownloadMode DownloadMode => this.DownloadQueueEntry.Options.DownloadMode;
+
         private string _downloadModeKey;
-        public string DownloadModeKey => this._downloadModeKey ?? (this._downloadModeKey = typeof(DownloadMode).GetEnumName(this.DownloadQueueEntry.DownloadMode));
+        public string DownloadModeKey => 
+            this._downloadModeKey
+            ?? (this._downloadModeKey = typeof(DownloadMode).GetEnumName(this.DownloadMode));
 
         public string Url => this.DownloadQueueEntry.Url;
 

@@ -20,7 +20,10 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Button Command="{Binding StartDownload}" Content="Download" />
+        <Button
+            Command="{Binding StartDownload}"
+            Content="Download all"
+            ToolTip="Download all queued items as a single batch" />
 
         <Grid Grid.Row="1" Visibility="{Binding IsDownloading, Converter={StaticResource BooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>

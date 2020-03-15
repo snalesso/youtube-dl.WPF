@@ -8,7 +8,7 @@ namespace youtube_dl.WPF.Core.Models
 {
     public enum DownloadResultStatus
     {
-        Downloaded,
+        Completed,
         Failed
     }
 }

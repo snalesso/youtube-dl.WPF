@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using DynamicData;
+using ReactiveUI;
 using RunProcessAsTask;
 using System;
 using System.Collections.Generic;
@@ -44,7 +45,7 @@ namespace youtube_dl.WPF.Core.Services
         private readonly BehaviorSubject<bool> _whenIsBusyChanged_Subject = new BehaviorSubject<bool>(false);
         public IObservable<bool> WhenIsBusyChanged => this._whenIsBusyChanged_Subject.DistinctUntilChanged();
 
-        public IReadOnlyReactiveList<DownloadQueueEntry> DownloadingBatchQueue { get; } = new ReactiveList<DownloadQueueEntry>();
+        public IObservableList<DownloadQueueEntry> DownloadingBatchQueue { get; } = new SourceList<DownloadQueueEntry>();
 
         public async Task<DownloadHistoryEntry> DownloadAsync(DownloadQueueEntry entry)
         {
@@ -129,7 +130,7 @@ namespace youtube_dl.WPF.Core.Services
             dlOptions.PreferFFmpeg = true;
             dlOptions.FFmpegLocation = ".\\ffmpeg-latest-win64-static\\bin\\ffmpeg.exe"; // TODO: add x86 / x64 support
 
-            switch (entry.DownloadMode)
+            switch (entry.Options.DownloadMode)
             {
                 case DownloadMode.AudioOnly:
                     dlOptions.OutputFolderPath = $"E:\\Downloads\\youtube-dl\\audio\\%(title)s -- %(uploader)s -- %(id)s.%(ext)s";

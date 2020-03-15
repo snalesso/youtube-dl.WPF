@@ -6,13 +6,19 @@ using System.Threading.Tasks;
 
 namespace youtube_dl.WPF.Core.Models
 {
-    public abstract class DownloadOptions
+    // TODO: make this a value object so 2 identical URIs with the same download options are evaluated as duplicates
+    public class DownloadOptions : ValueObject<DownloadOptions>
     {
-        public abstract DownloadMode DownloadMode { get; }
-    }
+        public DownloadOptions(DownloadMode downloadMode)
+        {
+            this.DownloadMode = downloadMode;
+        }
 
-    public class AudioDownloadOptions : DownloadOptions
-    {
-        public override DownloadMode DownloadMode => DownloadMode.AudioOnly;
+        public virtual DownloadMode DownloadMode { get; }
+
+        protected override IEnumerable<object> GetValueIngredients()
+        {
+            yield return this.DownloadMode;
+        }
     }
 }
