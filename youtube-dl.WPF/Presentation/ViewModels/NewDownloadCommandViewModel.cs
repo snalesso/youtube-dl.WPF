@@ -16,12 +16,12 @@ using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
 {
-    public class AddDownloadQueueEntryViewModel : ReactiveScreen
+    public class NewDownloadCommandViewModel : ReactiveScreen
     {
         private readonly DownloadCommandsQueue _downloadCommandsQueue;
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
-        public AddDownloadQueueEntryViewModel(DownloadCommandsQueue downloadCommandsQueue)
+        public NewDownloadCommandViewModel(DownloadCommandsQueue downloadCommandsQueue)
         {
             this._downloadCommandsQueue = downloadCommandsQueue ?? throw new ArgumentNullException(nameof(downloadCommandsQueue));
 
@@ -36,11 +36,12 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                     var clipboardText = Clipboard.GetText(TextDataFormat.Text);
                     if (!string.IsNullOrWhiteSpace(clipboardText))
                     {
-                        this._downloadCommandsQueue.Enqueue(new DownloadCommand(this.Url, new DownloadCommandOptions(this.SelectedDownloadMode)));
+                        var clipboardUrls = clipboardText.Split(new string[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries);
+                        this._downloadCommandsQueue.Enqueue(new DownloadCommand(clipboardUrls, new DownloadCommandOptions(this.SelectedDownloadMode)));
                     }
                 });
             this.EnqueueFromClipboard.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
-            this.EnqueueFromClipboard.DisposeWith(this._disposables); 
+            this.EnqueueFromClipboard.DisposeWith(this._disposables);
 
             this.Enqueue = ReactiveCommand.Create(
                 () =>
@@ -74,6 +75,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         }
 
         public ReactiveCommand<Unit, string> ReadClipboard { get; }
+        // TODO: this command duplicates implementation. Simplify.
         public ReactiveCommand<Unit, Unit> EnqueueFromClipboard { get; }
         public ReactiveCommand<Unit, Unit> Enqueue { get; }
     }

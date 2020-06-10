@@ -17,7 +17,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
 
         public DownloadQueueEntryViewModel(
             //DownloadQueueService downloadQueueService,
-            DownloadQueueEntry downloadQueueEntry)
+            DownloadCommand downloadQueueEntry)
         {
             //this._downloadQueueService = downloadQueueService ?? throw new ArgumentNullException(nameof(downloadQueueService));
 
@@ -29,16 +29,16 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             //    });
         }
 
-        public DownloadQueueEntry DownloadQueueEntry { get; }
+        public DownloadCommand DownloadQueueEntry { get; }
 
         public DownloadMode DownloadMode => this.DownloadQueueEntry.Options.DownloadMode;
 
         private string _downloadModeKey;
-        public string DownloadModeKey => 
+        public string DownloadModeKey =>
             this._downloadModeKey
             ?? (this._downloadModeKey = typeof(DownloadMode).GetEnumName(this.DownloadMode));
 
-        public string Url => this.DownloadQueueEntry.Url;
+        public IReadOnlyList<string> Urls => this.DownloadQueueEntry.Urls;
 
         //public ReactiveCommand<Unit, Unit> Download { get; }
     }

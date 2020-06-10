@@ -1,33 +1,33 @@
-﻿using Caliburn.Micro;
-using ReactiveUI;
-using System;
-using System.Reactive;
+﻿using System;
 using System.Reactive.Disposables;
 using System.Reflection;
-using youtube_dl.WPF.Core.Services;
+using Caliburn.Micro;
+using youtube_dl.WPF.Core;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
 {
     public class ShellViewModel : Conductor<Caliburn.Micro.IScreen>.Collection.AllActive
     {
-        private readonly IYouTubeDLService _youTubeDLService;
-        private readonly CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly YouTubeDL _youTubeDL;
 
         public ShellViewModel(
-            IYouTubeDLService youTubeDLService,
-            AddDownloadQueueEntryViewModel addDownloadQueueEntryViewModel,
+            YouTubeDL youTubeDLService,
+            //AddDownloadQueueEntryViewModel addDownloadQueueEntryViewModel,
+            NewDownloadCommandViewModel newDownloadCommandViewModel,
             DownloadQueueViewModel downloadQueueViewModel,
             DownloadViewModel downloadViewModel,
             UtilsViewModel utilsViewModel)
         {
-            this._youTubeDLService = youTubeDLService ?? throw new ArgumentNullException(nameof(youTubeDLService));
+            this._youTubeDL = youTubeDLService ?? throw new ArgumentNullException(nameof(youTubeDLService));
 
-            this.AddDownloadQueueEntryViewModel = addDownloadQueueEntryViewModel ?? throw new ArgumentNullException(nameof(addDownloadQueueEntryViewModel));
+            //this.AddDownloadQueueEntryViewModel = addDownloadQueueEntryViewModel ?? throw new ArgumentNullException(nameof(addDownloadQueueEntryViewModel));
+            this.NewDownloadCommandViewModel = newDownloadCommandViewModel ?? throw new ArgumentNullException(nameof(newDownloadCommandViewModel));
             this.DownloadQueueViewModel = downloadQueueViewModel ?? throw new ArgumentNullException(nameof(downloadQueueViewModel));
             this.DownloadViewModel = downloadViewModel ?? throw new ArgumentNullException(nameof(downloadViewModel));
             this.UtilsViewModel = utilsViewModel ?? throw new ArgumentNullException(nameof(utilsViewModel));
 
-            this.ActivateItem(this.AddDownloadQueueEntryViewModel);
+            //this.ActivateItem(this.AddDownloadQueueEntryViewModel);
+            this.ActivateItem(this.NewDownloadCommandViewModel);
             this.ActivateItem(this.DownloadQueueViewModel);
             this.ActivateItem(this.DownloadViewModel);
             this.ActivateItem(this.UtilsViewModel);
@@ -35,7 +35,8 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             this.DisplayName = Assembly.GetEntryAssembly().GetAssemblyName();
         }
 
-        public AddDownloadQueueEntryViewModel AddDownloadQueueEntryViewModel { get; }
+        //public AddDownloadQueueEntryViewModel AddDownloadQueueEntryViewModel { get; }
+        public NewDownloadCommandViewModel NewDownloadCommandViewModel { get; }
         public DownloadQueueViewModel DownloadQueueViewModel { get; }
         public DownloadViewModel DownloadViewModel { get; }
         public UtilsViewModel UtilsViewModel { get; }

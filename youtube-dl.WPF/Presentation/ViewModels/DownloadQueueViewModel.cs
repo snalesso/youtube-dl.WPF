@@ -10,6 +10,7 @@ using DynamicData;
 using DynamicData.Alias;
 using DynamicData.PLinq;
 using ReactiveUI;
+using youtube_dl.WPF.Core;
 using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
@@ -17,14 +18,17 @@ namespace youtube_dl.WPF.Presentation.ViewModels
     public class DownloadQueueViewModel : ReactiveScreen
     {
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
+        private readonly YouTubeDL _youTubeDL;
+        private readonly DownloadCommandsQueue _downloadCommandsQueue;
 
-        private readonly IDownloadQueueService _downloadQueueService;
-
-        public DownloadQueueViewModel(IDownloadQueueService downloadQueueService)
+        public DownloadQueueViewModel(
+            YouTubeDL youTubeDL,
+            DownloadCommandsQueue downloadQueueService)
         {
-            this._downloadQueueService = downloadQueueService ?? throw new ArgumentNullException(nameof(downloadQueueService));
+            this._youTubeDL = youTubeDL ?? throw new ArgumentNullException(nameof(youTubeDL));
+            this._downloadCommandsQueue = downloadQueueService ?? throw new ArgumentNullException(nameof(downloadQueueService));
 
-            this._downloadQueueService.QueueEntries.Connect()
+            this._downloadCommandsQueue.Entries.Connect()
                 .Transform(qe => new DownloadQueueEntryViewModel(qe))
                 .DisposeMany()
                 .Bind(out this._downloadQueueEntryViewModels_rooc)
@@ -32,15 +36,15 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 .DisposeWith(this._disposables);
 
             this.EmptyQueue = ReactiveCommand.Create(
-                this._downloadQueueService.Empty,
-                this._downloadQueueService.QueueEntries.CountChanged.Select(count => count != 0));
+                this._downloadCommandsQueue.EmptyQueue,
+                this._downloadCommandsQueue.Entries.CountChanged.Select(count => count != 0));
             this.EmptyQueue.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
             this.EmptyQueue.DisposeWith(this._disposables);
 
             this.RemoveSelected = ReactiveCommand.Create(
                 () =>
                 {
-                    this._downloadQueueService.Extract(this.SelectedDownloadQueueEntryViewModel.DownloadQueueEntry);
+                    this._downloadCommandsQueue.Remove(this.SelectedDownloadQueueEntryViewModel.DownloadQueueEntry);
                 },
                 this.WhenAnyValue(vm => vm.SelectedDownloadQueueEntryViewModel).Select(entry => entry != null));
             this.RemoveSelected.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);

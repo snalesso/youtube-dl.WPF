@@ -12,6 +12,7 @@ using System.Reactive.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using youtube_dl.WPF.Core;
 using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
@@ -19,7 +20,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
     public class DependenciesCheckerViewModel : ReactiveScreen
     {
         private readonly IWindowManager _windowManager;
-        private readonly IYouTubeDLService _youTubeDLService;
+        private readonly YouTubeDL _youTubeDL;
         private readonly IFileSystemService _fileSystemService;
         private readonly Func<ShellViewModel> _shellViewModelFactory;
 
@@ -27,20 +28,20 @@ namespace youtube_dl.WPF.Presentation.ViewModels
 
         public DependenciesCheckerViewModel(
             IWindowManager windowManager,
-            IYouTubeDLService youTubeDLService,
+            YouTubeDL youTubeDL,
             IFileSystemService fileSystemService,
             Func<ShellViewModel> shellViewModelFactory)
         {
             this._windowManager = windowManager ?? throw new ArgumentNullException(nameof(windowManager));
-            this._youTubeDLService = youTubeDLService ?? throw new ArgumentNullException(nameof(youTubeDLService));
+            this._youTubeDL = youTubeDL ?? throw new ArgumentNullException(nameof(youTubeDL));
             this._fileSystemService = fileSystemService ?? throw new ArgumentNullException(nameof(fileSystemService));
             this._shellViewModelFactory = shellViewModelFactory ?? throw new ArgumentNullException(nameof(shellViewModelFactory));
 
             this.CheckForYouTubeDLPresence = ReactiveCommand.Create(() =>
             {
-                this.Status = "Checking for youtube-DL ...";
-                var isYTDLPresent = File.Exists(this._youTubeDLService.ExeFilePath);
-                this.Status = isYTDLPresent ? "youtube-DL found" : "youtube-DL not found";
+                this.Status = $"Checking for {YouTubeDL.OfficialName} ...";
+                var isYTDLPresent = File.Exists(this._youTubeDL.ExeFileLocation.LocalPath);
+                this.Status = isYTDLPresent ? $"{YouTubeDL.OfficialName} found" : $"{YouTubeDL.OfficialName} not found";
 
                 return isYTDLPresent;
             });
@@ -55,10 +56,10 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 //    Directory.CreateDirectory(youTubeDLExeDirPath);
                 //}
 
-                this.Status = "Downloading youtube-DL ...";
-                var downloaded = await this._fileSystemService.DownloadFileAsync(YouTubeDLService.DirectDownloadUrl, this._youTubeDLService.ExeFilePath, true);
+                this.Status = $"Downloading {YouTubeDL.OfficialName} ...";
+                var downloaded = await this._fileSystemService.DownloadFileAsync(YouTubeDL.DirectDownloadUrl, this._youTubeDL.ExeFileLocation.LocalPath, true);
 
-                this.Status = downloaded ? "youtube-DL downloaded" : "youtube-DL download failed";
+                this.Status = downloaded ? $"{YouTubeDL.OfficialName} downloaded" : $"{YouTubeDL.OfficialName} download failed";
 
                 return downloaded;
             });
@@ -67,10 +68,10 @@ namespace youtube_dl.WPF.Presentation.ViewModels
 
             this.TryUpdateYouTubeDL = ReactiveCommand.CreateFromTask(async () =>
             {
-                this.Status = "Updating youtube-DL ...";
-                var didUpdate = await this._youTubeDLService.UpdateAsync();
+                this.Status = $"Updating {YouTubeDL.OfficialName} ...";
+                var didUpdate = await this._youTubeDL.UpdateAsync();
                 //await Task.Delay(3000);
-                this.Status = didUpdate ? "youtube-DL updated!" : "youtbe-DL is already on the latest vesion";
+                this.Status = didUpdate ? $"{YouTubeDL.OfficialName} updated!" : $"{YouTubeDL.OfficialName} is already on the latest vesion";
 
                 return didUpdate;
             });
@@ -81,7 +82,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             {
                 this.Status = "Checking for FFmpeg ...";
                 var ffmpegParentDirectoryPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                var ffmpegRootDirectoryPath = Path.Combine(ffmpegParentDirectoryPath, Path.GetFileNameWithoutExtension(FFmpegConstants.DirectDownloadLike_64));
+                var ffmpegRootDirectoryPath = Path.Combine(ffmpegParentDirectoryPath, Path.GetFileNameWithoutExtension(FFmpeg.DirectDownloadLink_64));
                 //var ffmpegFilePath = Path.Combine(Path.GetDirectoryName(), Path.GetFileName(FFmpegConstants.DirectDownloadLike_64));
 
                 var isFFmpegPresent = Directory.Exists(ffmpegRootDirectoryPath);
@@ -97,9 +98,9 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             {
                 this.Status = "Downloading FFmpeg ...";
                 var ffmpegParentDirectoryPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-                var ffmpegArchiveFilePath = Path.Combine(ffmpegParentDirectoryPath, Path.GetFileName(FFmpegConstants.DirectDownloadLike_64));
+                var ffmpegArchiveFilePath = Path.Combine(ffmpegParentDirectoryPath, Path.GetFileName(FFmpeg.DirectDownloadLink_64));
 
-                var downloaded = await this._fileSystemService.DownloadFileAsync(FFmpegConstants.DirectDownloadLike_64, ffmpegArchiveFilePath);
+                var downloaded = await this._fileSystemService.DownloadFileAsync(FFmpeg.DirectDownloadLink_64, ffmpegArchiveFilePath);
                 //, (bytesSize, bytesDownloaded, progressPercent) => { Console.WriteLine($"{string.Format("{0:00}", progressPercent)}%\t({bytesDownloaded} of {bytesSize})"); }
                 this.Status = "FFmpeg downloaded";
 

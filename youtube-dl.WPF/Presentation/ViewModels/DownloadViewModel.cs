@@ -5,6 +5,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using Caliburn.Micro.ReactiveUI;
 using ReactiveUI;
+using youtube_dl.WPF.Core;
 using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
@@ -13,22 +14,22 @@ namespace youtube_dl.WPF.Presentation.ViewModels
     {
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
-        private readonly IDownloadQueueService _downloadQueueService;
-        private readonly IYouTubeDLService _youTubeDLService;
+        private readonly DownloadCommandsQueue _downloadCommandsQueue;
+        private readonly YouTubeDL _youTubeDL;
 
         public DownloadViewModel(
-            IDownloadQueueService downloadQueueService,
-            IYouTubeDLService youTubeDLService)
+            DownloadCommandsQueue downloadCommandsQueue,
+            YouTubeDL youTubeDL)
         {
-            this._downloadQueueService = downloadQueueService ?? throw new ArgumentNullException(nameof(downloadQueueService));
-            this._youTubeDLService = youTubeDLService ?? throw new ArgumentNullException(nameof(youTubeDLService));
+            this._downloadCommandsQueue = downloadCommandsQueue ?? throw new ArgumentNullException(nameof(downloadCommandsQueue));
+            this._youTubeDL = youTubeDL ?? throw new ArgumentNullException(nameof(youTubeDL));
 
             this.StartDownload = ReactiveCommand.CreateFromTask(
                 async () =>
                 {
-                    await this._youTubeDLService.DownloadAsync(this._downloadQueueService.Dequeue());
+                    //await this._youTubeDL..DownloadAsync(this._downloadCommandsQueue.Dequeue());
                 },
-                this._downloadQueueService.QueueEntries.CountChanged.Select(count => count != 0));
+                this._downloadCommandsQueue.Entries.CountChanged.Select(count => count != 0));
             this.StartDownload.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
             this.StartDownload.DisposeWith(this._disposables);
 

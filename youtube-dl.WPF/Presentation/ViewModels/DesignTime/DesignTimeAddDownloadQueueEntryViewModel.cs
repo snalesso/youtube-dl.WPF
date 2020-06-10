@@ -9,7 +9,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels.DesignTime
 {
     internal class DesignTimeAddDownloadQueueEntryViewModel : AddDownloadQueueEntryViewModel
     {
-        public DesignTimeAddDownloadQueueEntryViewModel() : base(DummyDownloadQueueService.Instance)
+        public DesignTimeAddDownloadQueueEntryViewModel() : base(DummyDownloadCommandsQueue.Instance)
         {
             this.Url = "https://www.youtube.com/watch?v=tj9ACpY3lW4";
         }

@@ -5,7 +5,7 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 
-namespace youtube_dl.WPF.Core.Services
+namespace youtube_dl.WPF.Core
 {
     public class WindowsFileSystemService : IFileSystemService
     {
@@ -21,7 +21,7 @@ namespace youtube_dl.WPF.Core.Services
                         return false;
                 }
 
-                Process.Start($"\"{folderPath}\"");
+                System.Diagnostics.Process.Start($"\"{folderPath}\"");
 
                 return true;
             }
@@ -35,7 +35,7 @@ namespace youtube_dl.WPF.Core.Services
         {
             try
             {
-                Process.Start("explorer.exe", $"/select, \"{selectedFilePath}\"");
+                System.Diagnostics.Process.Start("explorer.exe", $"/select, \"{selectedFilePath}\"");
 
                 return true;
             }
@@ -47,7 +47,7 @@ namespace youtube_dl.WPF.Core.Services
 
         public void NavigateUrl(string url)
         {
-            Process.Start(url);
+            System.Diagnostics.Process.Start(url);
         }
 
         public bool UncompressArchive(string archiveFilePath, string extractDirectoryPath, Action<long, long, int> progressHandler = null)

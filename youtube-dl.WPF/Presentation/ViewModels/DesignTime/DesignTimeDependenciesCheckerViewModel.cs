@@ -11,7 +11,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels.DesignTime
     internal class DesignTimeDependenciesCheckerViewModel : DependenciesCheckerViewModel
     {
         public DesignTimeDependenciesCheckerViewModel() : base(
-            new WindowManager(), DummyYouTubeDLService.Instance, DummyFileSystemService.Instance, () => new DesignTimeShellViewModel())
+            new WindowManager(), DummyYouTubeDL.Instance, DummyFileSystemService.Instance, () => new DesignTimeShellViewModel())
         {
         }
     }

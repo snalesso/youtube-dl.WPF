@@ -171,33 +171,37 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\DownloadCommandOptionsPreset.cs" />
+    <Compile Include="Core\DownloadService.cs" />
     <Compile Include="Core\Entity`1.cs" />
     <Compile Include="Core\HashCodeHelper.cs" />
-    <Compile Include="Core\Models\AudioDownloadOptions.cs" />
-    <Compile Include="Core\Models\AudioFormat.cs" />
-    <Compile Include="Core\Models\DownloadOptions.cs" />
-    <Compile Include="Core\Models\DownloadQueueBatch.cs" />
-    <Compile Include="Core\Models\AppSettings.cs" />
-    <Compile Include="Core\Models\VideoResolutionHeight.cs" />
-    <Compile Include="Core\Models\YouTubeDLDownloadOptions.cs" />
-    <Compile Include="Core\Services\DummyFileSystemService.cs" />
-    <Compile Include="Core\Services\FFmpegConstants.cs" />
-    <Compile Include="Core\Services\IFileSystemService.cs" />
-    <Compile Include="Core\Services\ISettingsService.cs" />
-    <Compile Include="Core\Services\WindowsFileSystemService.cs" />
+    <Compile Include="Core\AudioFormat.cs" />
+    <Compile Include="Core\Queue\EnqueuedDownloadCommand.cs" />
+    <Compile Include="Core\DownloadCommandOptions.cs" />
+    <Compile Include="Core\AppSettings.cs" />
+    <Compile Include="Core\TaskManager.cs" />
+    <Compile Include="Core\VideoResolution.cs" />
+    <Compile Include="Core\VideoResolutionHeight.cs" />
+    <Compile Include="Core\VideoResolutionWidth.cs" />
+    <Compile Include="Core\DownloadCommandExecutionContext.cs" />
+    <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeNewDownloadCommandViewModel.cs" />
+    <Compile Include="Presentation\ViewModels\NewDownloadCommandViewModel.cs" />
+    <Compile Include="Presentation\ViewModels\DesignTime\DummyFileSystemService.cs" />
+    <Compile Include="Core\FFmpeg.cs" />
+    <Compile Include="Core\IFileSystemService.cs" />
+    <Compile Include="Core\ISettingsService.cs" />
+    <Compile Include="Core\WindowsFileSystemService.cs" />
     <Compile Include="Core\ValueObject`1.cs" />
     <Compile Include="Presentation\Composition\Autofac\AutofacBootstrapper.cs" />
     <Compile Include="Presentation\Composition\CustomBootstrapperBase`1.cs" />
-    <Compile Include="Core\Models\DownloadMode.cs" />
-    <Compile Include="Core\Models\DownloadHistoryEntry.cs" />
-    <Compile Include="Core\Models\DownloadResultStatus.cs" />
-    <Compile Include="Core\Services\DownloadHistoryService.cs" />
-    <Compile Include="Core\Services\DownloadQueueService.cs" />
-    <Compile Include="Core\Services\DummyDownloadQueueService.cs" />
-    <Compile Include="Core\Services\DummyYouTubeDLService.cs" />
-    <Compile Include="Core\Services\IDownloadQueueService.cs" />
-    <Compile Include="Core\Services\IYouTubeDLService.cs" />
-    <Compile Include="Core\Services\YouTubeDLService.cs" />
+    <Compile Include="Core\DownloadMode.cs" />
+    <Compile Include="Core\History\DownloadHistoryEntry.cs" />
+    <Compile Include="Core\YouTubeDLInstanceObserverStatus.cs" />
+    <Compile Include="Core\History\DownloadsHistory.cs" />
+    <Compile Include="Core\Queue\DownloadCommandsQueue.cs" />
+    <Compile Include="Presentation\ViewModels\DesignTime\DummyDownloadCommandsQueue.cs" />
+    <Compile Include="Presentation\ViewModels\DesignTime\DummyYouTubeDL.cs" />
+    <Compile Include="Core\YouTubeDL.cs" />
     <Compile Include="Presentation\Converters\DownloadModeToPackIconKindConverter.cs" />
     <Compile Include="Presentation\MarkupExtensions\EnumExtension+EnumMember.cs" />
     <Compile Include="Presentation\MarkupExtensions\EnumExtension.cs" />
@@ -206,6 +210,9 @@
     <Compile Include="Presentation\ViewModels\DependenciesCheckerViewModel.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeDependenciesCheckerViewModel.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeUtilsViewModel.cs" />
+    <Compile Include="Presentation\Views\NewDownloadCommandView.xaml.cs">
+      <DependentUpon>NewDownloadCommandView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\Views\AddDownloadQueueEntryView.xaml.cs">
       <DependentUpon>AddDownloadQueueEntryView.xaml</DependentUpon>
     </Compile>
@@ -231,6 +238,10 @@
     <Compile Include="Presentation\ViewModels\DownloadViewModel.cs" />
     <Compile Include="Presentation\ViewModels\ShellViewModel.cs" />
     <Compile Include="Presentation\ViewModels\UtilsViewModel.cs" />
+    <Page Include="Presentation\Views\NewDownloadCommandView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Presentation\Views\AddDownloadQueueEntryView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -265,7 +276,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Core\Models\DownloadQueueEntry.cs" />
+    <Compile Include="Core\DownloadCommand.cs" />
+    <Compile Include="Process\ProcessUtils.cs" />
+    <Compile Include="Process\ProcessResults.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>

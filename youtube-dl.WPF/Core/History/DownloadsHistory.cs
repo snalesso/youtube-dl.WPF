@@ -9,9 +9,9 @@ using youtube_dl.WPF.Core.Models;
 
 namespace youtube_dl.WPF.Core.Services
 {
-    public class DownloadHistoryService
+    public class DownloadsHistory
     {
-        public DownloadHistoryService() { }
+        public DownloadsHistory() { }
 
         private readonly ISourceList<DownloadHistoryEntry> _historyEntries = new SourceList<DownloadHistoryEntry>();
         public IObservableList<DownloadHistoryEntry> HistoryEntries => this._historyEntries;

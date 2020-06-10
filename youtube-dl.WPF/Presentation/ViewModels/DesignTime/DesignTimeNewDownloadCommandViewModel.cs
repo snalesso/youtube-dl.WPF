@@ -7,11 +7,9 @@ using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels.DesignTime
 {
-    internal class DesignTimeDownloadQueueViewModel : DownloadQueueViewModel
+    class DesignTimeNewDownloadCommandViewModel : NewDownloadCommandViewModel
     {
-        public DesignTimeDownloadQueueViewModel() : base(
-            DummyYouTubeDL.Instance,
-            DummyDownloadCommandsQueue.Instance)
+        public DesignTimeNewDownloadCommandViewModel() : base(DummyDownloadCommandsQueue.Instance)
         {
         }
     }

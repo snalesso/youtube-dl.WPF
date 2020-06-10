@@ -8,6 +8,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
+using youtube_dl.WPF.Core;
 using youtube_dl.WPF.Core.Services;
 using youtube_dl.WPF.Presentation.Services;
 using youtube_dl.WPF.Presentation.ViewModels;
@@ -67,14 +68,20 @@ namespace youtube_dl.WPF.Presentation.Composition.Autofac
 
             builder.Register<IWindowManager>(c => new CustomWindowManager()).InstancePerLifetimeScope();
 
-            builder.RegisterType<DownloadQueueService>().As<IDownloadQueueService>().InstancePerLifetimeScope();
-            builder.RegisterType<DownloadHistoryService>().AsSelf().InstancePerLifetimeScope();
-            builder.RegisterType<YouTubeDLService>().As<IYouTubeDLService>().InstancePerLifetimeScope();
+            builder.RegisterType<DownloadCommandsQueue>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<DownloadsHistory>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<WindowsFileSystemService>().As<IFileSystemService>().InstancePerLifetimeScope();
+            builder
+                .Register(ctx =>
+                    new YouTubeDL(
+                        new Uri("file://youtube-dl/youtube-dl.exe"),
+                        ctx.Resolve<IFileSystemService>()))
+                .InstancePerLifetimeScope();
 
             // ViewModels
 
             builder.RegisterType<AddDownloadQueueEntryViewModel>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<NewDownloadCommandViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DownloadQueueViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DownloadViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<UtilsViewModel>().AsSelf().InstancePerLifetimeScope();
@@ -92,8 +99,8 @@ namespace youtube_dl.WPF.Presentation.Composition.Autofac
 
             //if (!Debugger.IsAttached)
             //{
-                builder.RegisterType<DependenciesCheckerViewModel>().AsSelf().InstancePerLifetimeScope();
-                builder.RegisterType<DependenciesCheckerView>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+            builder.RegisterType<DependenciesCheckerViewModel>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<DependenciesCheckerView>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
             //}
             // Views
 

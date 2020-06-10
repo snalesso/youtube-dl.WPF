@@ -1,47 +1,41 @@
-﻿using Caliburn.Micro;
-using Caliburn.Micro.ReactiveUI;
-using ReactiveUI;
-using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using youtube_dl.WPF.Core.Services;
+using Caliburn.Micro.ReactiveUI;
+using ReactiveUI;
+using youtube_dl.WPF.Core;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
 {
     public class UtilsViewModel : ReactiveScreen
     {
-        private readonly IYouTubeDLService _youTubeDLService;
+        private readonly YouTubeDL _youTubeDL;
         private readonly IFileSystemService _fileSystemService;
 
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
         public UtilsViewModel(
-            IYouTubeDLService youTubeDLService,
+            YouTubeDL youTubeDL,
             IFileSystemService fileSystemService)
         {
-            this._youTubeDLService = youTubeDLService ?? throw new ArgumentNullException(nameof(youTubeDLService));
+            this._youTubeDL = youTubeDL ?? throw new ArgumentNullException(nameof(youTubeDL));
             this._fileSystemService = fileSystemService ?? throw new ArgumentNullException(nameof(fileSystemService));
 
             this.UpdateDependencies = ReactiveCommand.CreateFromTask(async () =>
             {
-                return await this._youTubeDLService.UpdateAsync();
+                return await this._youTubeDL.UpdateAsync();
             }, outputScheduler: RxApp.MainThreadScheduler);
             this.UpdateDependencies.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
             this.UpdateDependencies.DisposeWith(this._disposables);
 
-            this.OpenDownloadsFolder = ReactiveCommand.Create(() => this._fileSystemService.OpenFolder(this._youTubeDLService.DownloadsFolderPath));
+            this.OpenDownloadsFolder = ReactiveCommand.Create(() => this._fileSystemService.OpenFolder(this._youTubeDL.DownloadsFolderLocation.LocalPath));
             this.OpenDownloadsFolder.ThrownExceptions.Subscribe(ex => Console.WriteLine($"++ThrownExceptions: {ex.ToString()}")).DisposeWith(this._disposables);
             this.OpenDownloadsFolder.Where(couldOpenFolder => !couldOpenFolder).Subscribe(couldOpenFolder => Console.WriteLine("Downloads folder not found"));
             this.OpenDownloadsFolder.DisposeWith(this._disposables);
 
-            this.NavigateToYoutubeDLDocumentationWebPage = ReactiveCommand.Create(() => this._fileSystemService.NavigateUrl(YouTubeDLService.DocumentationWebPage));
+            this.NavigateToYoutubeDLDocumentationWebPage = ReactiveCommand.Create(() => this._fileSystemService.NavigateUrl(YouTubeDL.DocumentationWebPage));
             this.NavigateToYoutubeDLDocumentationWebPage.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
             this.NavigateToYoutubeDLDocumentationWebPage.DisposeWith(this._disposables);
         }

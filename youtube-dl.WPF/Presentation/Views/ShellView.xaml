@@ -44,10 +44,10 @@
             Grid.Column="1"
             DataContext="{Binding UtilsViewModel}" />
 
-        <Views:AddDownloadQueueEntryView
+        <Views:NewDownloadCommandView
             Grid.Row="3"
             Grid.Column="1"
-            DataContext="{Binding AddDownloadQueueEntryViewModel}" />
+            DataContext="{Binding NewDownloadCommandViewModel}" />
 
         <Views:DownloadQueueView
             Grid.Row="5"
