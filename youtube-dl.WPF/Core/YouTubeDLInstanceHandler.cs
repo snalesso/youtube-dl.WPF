@@ -10,17 +10,17 @@ using System.Threading.Tasks;
 using DynamicData;
 using youtube_dl.WPF.Process;
 
-namespace youtube_dl.WPF.Core.Models
+namespace youtube_dl.WPF.Core
 {
-    public class YouTubeDLInstanceObserver : IDisposable
+    public class YouTubeDLInstanceHandler : IDisposable
     {
         //private readonly DownloadCommandOptions _downloadOptions;
         private readonly Uri _youtubeDlExeFilePath;
         private readonly IObservable<Unit> _pollTicker = Observable.Interval(TimeSpan.FromMilliseconds(500)).Select(x => Unit.Default);
 
-        public YouTubeDLInstanceObserver(
+        public YouTubeDLInstanceHandler(
             Uri youtubeDlExeFilePath,
-            DownloadCommand command)
+            IYouTubeDLCommand command)
         {
             this._youtubeDlExeFilePath = youtubeDlExeFilePath ?? throw new ArgumentNullException(nameof(youtubeDlExeFilePath));
             this.Command = command ?? throw new ArgumentNullException(nameof(command));
@@ -28,32 +28,50 @@ namespace youtube_dl.WPF.Core.Models
             this._outputsSourceList = new SourceList<string>().DisposeWith(this._disposables);
             this._errorsSourceList = new SourceList<string>().DisposeWith(this._disposables);
 
-            this._whenDownloadStatusChanged_behaviorSubject = new BehaviorSubject<YouTubeDLInstanceObserverStatus>(YouTubeDLInstanceObserverStatus.Ready).DisposeWith(this._disposables);
+            this._whenDownloadStatusChanged_behaviorSubject = new BehaviorSubject<YouTubeDLInstanceStatus>(YouTubeDLInstanceStatus.Ready).DisposeWith(this._disposables);
             this.WhenStatusChanged = this._whenDownloadStatusChanged_behaviorSubject.DistinctUntilChanged();
         }
 
-        public DownloadCommand Command { get; }
+        public IYouTubeDLCommand Command { get; }
 
         // TODO: ensure, when process ends, all disposables linked to process life time get disposed and the object becomes "frozen"
-        public Task ExecuteAsync()
+        public Task ExecuteAsync(CancellationToken cancellationToken)
         {
             var psi = new ProcessStartInfo()
             {
-                Arguments = this.Command.Options.ToString(),
+                Arguments = this.Command.Options.Serialize(),
                 FileName = this._youtubeDlExeFilePath.LocalPath,
                 CreateNoWindow = true
             };
 
             return ProcessUtils.RunAsync(
-                psi,
-                output => this._outputsSourceList.Edit(list => list.Add(output)),
-                error => this._errorsSourceList.Edit(list => list.Add(error)),
-                (exitCode) => this._whenDownloadStatusChanged_behaviorSubject.OnNext(exitCode == 0 ? YouTubeDLInstanceObserverStatus.Completed : YouTubeDLInstanceObserverStatus.Failed),
-                CancellationToken.None);
+               psi,
+               output => this._outputsSourceList.Edit(list => list.Add(output)),
+               error => this._errorsSourceList.Edit(list => list.Add(error)),
+               (exitCode) =>
+               {
+                   this._whenDownloadStatusChanged_behaviorSubject.OnNext(
+                       exitCode == 0
+                       ? YouTubeDLInstanceStatus.Completed
+                       : YouTubeDLInstanceStatus.Failed);
+                   // TODO: verify .OnCompleted() needed
+                   this._whenDownloadStatusChanged_behaviorSubject.OnCompleted();
+               },
+               cancellationToken);
         }
+        public Task ExecuteAsync() { return this.ExecuteAsync(CancellationToken.None); }
 
-        private readonly BehaviorSubject<YouTubeDLInstanceObserverStatus> _whenDownloadStatusChanged_behaviorSubject;
-        public IObservable<YouTubeDLInstanceObserverStatus> WhenStatusChanged { get; }
+        //private CancellationTokenSource _cancellationTokenSource;
+        //public void Terminate()
+        //{
+        //    if (this._cancellationTokenSource.Token.CanBeCanceled)
+        //    {
+        //        this._cancellationTokenSource.Cancel();
+        //    }
+        //}
+
+        private readonly BehaviorSubject<YouTubeDLInstanceStatus> _whenDownloadStatusChanged_behaviorSubject;
+        public IObservable<YouTubeDLInstanceStatus> WhenStatusChanged { get; }
 
         private readonly ISourceList<string> _outputsSourceList;
         public IObservableList<string> Status => this._outputsSourceList.AsObservableList();

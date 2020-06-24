@@ -3,15 +3,15 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Converters="clr-namespace:youtube_dl.WPF.Presentation.Converters"
+    xmlns:Core="clr-namespace:youtube_dl.WPF.Core"
     xmlns:DesignTimeViewModels="clr-namespace:youtube_dl.WPF.Presentation.ViewModels.DesignTime"
     xmlns:MarkupExtensions="clr-namespace:youtube_dl.WPF.Presentation.MarkupExtensions"
     xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-    xmlns:Models="clr-namespace:youtube_dl.WPF.Core.Models"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:fa5="http://schemas.fontawesome.com/icons/"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DataContext="{d:DesignInstance Type=NewDownloadCommandViewModel,
+    d:DataContext="{d:DesignInstance Type=DesignTimeViewModels:DesignTimeNewDownloadCommandViewModel,
                                      IsDesignTimeCreatable=False}"
     mc:Ignorable="d">
 
@@ -25,13 +25,14 @@
             </ObjectDataProvider.MethodParameters>
         </ObjectDataProvider>-->
         <Converters:DownloadModeToPackIconKindConverter x:Key="DownloadModeToPackIconKindConverter" />
+        <Converters:ComparisonConverter x:Key="ComparisonConverter" />
     </UserControl.Resources>
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="8" />
-            <ColumnDefinition Width="*" />
+            <ColumnDefinition />
             <ColumnDefinition Width="8" />
             <ColumnDefinition Width="Auto" />
             <ColumnDefinition Width="8" />
@@ -39,6 +40,10 @@
             <ColumnDefinition Width="8" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
 
         <Button
             Grid.Column="0"
@@ -57,66 +62,103 @@
         </Button>
 
         <TextBox
+            Grid.RowSpan="2"
             Grid.Column="2"
             MinWidth="380"
             HorizontalAlignment="Stretch"
             VerticalContentAlignment="Center"
+            MaterialDesign:HintAssist.Hint="URLs"
+            MaterialDesign:HintAssist.IsFloating="False"
+            MaterialDesign:TextFieldAssist.HasClearButton="True"
             AcceptsReturn="False"
             AcceptsTab="False"
-            MaxLines="1"
             Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" />
 
-        <ComboBox
+        <!--<Grid
             Grid.Column="4"
             HorizontalAlignment="Center"
-            VerticalContentAlignment="Center"
-            ItemsSource="{Binding DownloadModes}"
-            SelectedValue="{Binding SelectedDownloadMode, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay, FallbackValue={x:Static Models:DownloadMode.AudioOnly}}">
-            <ComboBox.ItemTemplate>
-                <DataTemplate>
+            VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <RadioButton
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                IsChecked="{Binding IsAudioKept}"
+                Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
+                ToolTip="Keep audio">
+                <RadioButton.Content>
                     <MaterialDesign:PackIcon
-                        Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                        Height="Auto"
                         HorizontalAlignment="Left"
                         VerticalAlignment="Center"
                         HorizontalContentAlignment="Center"
                         VerticalContentAlignment="Center"
-                        Kind="{Binding ., Converter={StaticResource DownloadModeToPackIconKindConverter}, Mode=OneTime}" />
-                </DataTemplate>
-            </ComboBox.ItemTemplate>
-            <!--<ComboBox.Items>
-                <ComboBoxItem
-                    Content="{x:Static Models:DownloadMode.AudioOnly}"
-                    DataContext="{x:Static Models:DownloadMode.AudioOnly}"
-                    Tag="{x:Static Models:DownloadMode.AudioOnly}">
-                    <ComboBoxItem.Template>
-                        <ControlTemplate>
-                            <MaterialDesign:PackIcon
-                                Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                                Height="Auto"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Kind="Music" />
-                        </ControlTemplate>
-                    </ComboBoxItem.Template>
-                </ComboBoxItem>
-                <ComboBoxItem
-                    Content="{x:Static Models:DownloadMode.AudioVideo}"
-                    DataContext="{x:Static Models:DownloadMode.AudioVideo}"
-                    Tag="{x:Static Models:DownloadMode.AudioVideo}">
-                    <ComboBoxItem.Template>
-                        <ControlTemplate>
-                            <MaterialDesign:PackIcon
-                                Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                                Height="Auto"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Kind="Video" />
-                        </ControlTemplate>
-                    </ComboBoxItem.Template>
-                </ComboBoxItem>
-            </ComboBox.Items>-->
-        </ComboBox>
+                        Kind="Music" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                IsChecked="{Binding IsVideoKept}"
+                Style="{StaticResource MaterialDesignFlatPrimaryToggleButton}"
+                ToolTip="Keep video">
+                <RadioButton.Content>
+                    <MaterialDesign:PackIcon
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Kind="Video" />
+                </RadioButton.Content>
+            </RadioButton>
+
+        </Grid>-->
+
+        <Grid
+            Grid.Column="4"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="0" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <RadioButton
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                IsChecked="{Binding Path=SelectedDownloadMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static Core:DownloadMode.AudioOnly}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource MaterialDesignTabRadioButton}"
+                ToolTip="Download as audio">
+                <RadioButton.Content>
+                    <MaterialDesign:PackIcon
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Kind="Music" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                IsChecked="{Binding Path=SelectedDownloadMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static Core:DownloadMode.AudioVideo}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource MaterialDesignTabRadioButton}"
+                ToolTip="Download as video">
+                <RadioButton.Content>
+                    <MaterialDesign:PackIcon
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Kind="Video" />
+                </RadioButton.Content>
+            </RadioButton>
+
+        </Grid>
 
         <Button
             Grid.Column="6"

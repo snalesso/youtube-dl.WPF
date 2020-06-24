@@ -4,7 +4,10 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:Converters="clr-namespace:youtube_dl.WPF.Presentation.Converters"
     xmlns:DesignTimeViewModels="clr-namespace:youtube_dl.WPF.Presentation.ViewModels.DesignTime"
+    xmlns:Interactions="http://schemas.microsoft.com/expression/2010/interactivity"
     xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:ViewModels="clr-namespace:youtube_dl.WPF.Presentation.ViewModels"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:fa5="http://schemas.fontawesome.com/icons/"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -14,6 +17,7 @@
 
     <UserControl.Resources>
         <Converters:DownloadModeToPackIconKindConverter x:Key="DownloadModeToPackIconKindConverter" />
+        <Converters:IEnumerableOfStringsJoiner x:Key="IEnumerableOfStringsJoiner" />
     </UserControl.Resources>
 
     <Grid>
@@ -74,16 +78,10 @@
             Grid.Row="3"
             MinHeight="180"
             ItemsSource="{Binding DownloadQueueEntryViewModels}"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
             SelectedItem="{Binding SelectedDownloadQueueEntryViewModel}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Width="320" Header="Url">
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <TextBlock Text="{Binding Url}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
                     <GridViewColumn Width="80" Header="Mode">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
@@ -95,9 +93,82 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
+                    <GridViewColumn Width="Auto" Header="URL">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding URL, Mode=OneTime}" ToolTip="{Binding URL}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
+
+        <!--<ListBox ScrollViewer.VerticalScrollBarVisibility="Visible"
+            Grid.Row="3"
+            MinHeight="180"
+            ItemsSource="{Binding DownloadQueueEntryViewModels}"
+            SelectedItem="{Binding SelectedDownloadQueueEntryViewModel}">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+
+                    <Expander Grid.Column="2" Style="{StaticResource MaterialDesignExpander}">
+                        <Expander.Header>
+                            <StackPanel Orientation="Horizontal">
+                                <MaterialDesign:PackIcon
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
+                                    Kind="{Binding DownloadMode, Converter={StaticResource DownloadModeToPackIconKindConverter}, Mode=OneTime}" />
+                                <TextBlock Text="{Binding URLs.Count, StringFormat=\{0\} URLs}" />
+                            </StackPanel>
+                        </Expander.Header>
+
+                        <Expander.Content>
+                            <TextBlock Text="{Binding URLs, Converter={StaticResource IEnumerableOfStringsJoiner}, Mode=OneTime}" ToolTip="{Binding URLs}" />
+                        </Expander.Content>
+                    </Expander>
+
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox-->
+
+        <!--<TreeView
+            Grid.Row="3"
+            MinHeight="180"
+            HorizontalContentAlignment="Stretch"
+            BorderBrush="{x:Null}"
+            BorderThickness="0"
+            ItemsSource="{Binding DownloadQueueEntryViewModels}"
+            ScrollViewer.VerticalScrollBarVisibility="Visible">
+
+            <TreeView.Resources>
+
+                <HierarchicalDataTemplate DataType="{x:Type ViewModels:DownloadQueueEntryViewModel}" ItemsSource="{Binding URLs}">
+                    <Grid Grid.IsSharedSizeScope="True">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <MaterialDesign:PackIcon
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type TreeViewItem}}}"
+                            Kind="{Binding DownloadMode, Converter={StaticResource DownloadModeToPackIconKindConverter}, Mode=OneTime}" />
+
+                        <TextBlock Grid.Column="2" Text="{Binding URLs.Count, Mode=OneWay, StringFormat=\{0:D\} URLs}" />
+                    </Grid>
+                </HierarchicalDataTemplate>
+
+                <DataTemplate DataType="{x:Type System:String}">
+                    <TextBlock Text="{Binding ., Mode=OneTime}" />
+                </DataTemplate>
+
+            </TreeView.Resources>
+
+        </TreeView>-->
 
     </Grid>
 </UserControl>

@@ -1,4 +1,4 @@
-﻿namespace youtube_dl.WPF.Core.Models
+﻿namespace youtube_dl.WPF.Core
 {
     public enum VideoResolutionHeight
     {

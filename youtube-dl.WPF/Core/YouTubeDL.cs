@@ -1,23 +1,26 @@
 ﻿using DynamicData;
+using Nito.AsyncEx;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Net.PeerToPeer.Collaboration;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading;
 using System.Threading.Tasks;
-using youtube_dl.WPF.Core.Models;
+
 using youtube_dl.WPF.Process;
 
 namespace youtube_dl.WPF.Core
 {
-    public class YouTubeDL : IDisposable
+    public partial class YouTubeDL : IDisposable
     {
         #region constants
 
@@ -32,6 +35,7 @@ namespace youtube_dl.WPF.Core
         #endregion
 
         private readonly IFileSystemService _fileSystemService;
+        private readonly AsyncReaderWriterLock _exeRWLock = new AsyncReaderWriterLock();
 
         // TODO: settings class
         public YouTubeDL(
@@ -41,13 +45,13 @@ namespace youtube_dl.WPF.Core
             this.ExeFileLocation = exeFileLocation ?? throw new ArgumentNullException(nameof(exeFileLocation));
             this._fileSystemService = fileSystemService ?? throw new ArgumentNullException(nameof(fileSystemService));
 
-            this._executingInstances_SourceList = new SourceList<YouTubeDLInstanceObserver>().DisposeWith(this._disposables);
+            this._executingInstances_SourceList = new SourceList<YouTubeDLInstanceHandler>().DisposeWith(this._disposables);
             this.ExecutingInstances = this._executingInstances_SourceList.AsObservableList();
             this._whenIsBusyChanged_BehaviorSubject = new BehaviorSubject<bool>(false).DisposeWith(this._disposables);
         }
 
         public Uri ExeFileLocation { get; } // = new Uri( "youtube-dl\\youtube-dl.exe");
-        public Uri DownloadsFolderLocation { get; } = new Uri($"E:\\Downloads\\{YouTubeDL.OfficialName}"); // Path.Combine(Path.GetDirectoryName(this.ExeFilePath), "downloads");
+        public Uri DownloadsFolderLocation { get; } = new Uri(Path.Combine("D" + Path.VolumeSeparatorChar + Path.DirectorySeparatorChar, "Downloads", YouTubeDL.OfficialName)); // Path.Combine(Path.GetDirectoryName(this.ExeFilePath), "downloads");
 
         // TODO: use semaphore
         private readonly SemaphoreSlim _isBusySemaphore = new SemaphoreSlim(1, 1);
@@ -63,65 +67,103 @@ namespace youtube_dl.WPF.Core
         private readonly BehaviorSubject<bool> _whenIsBusyChanged_BehaviorSubject;
         public IObservable<bool> WhenIsBusyChanged => this._whenIsBusyChanged_BehaviorSubject.DistinctUntilChanged();
 
-        private readonly ISourceList<YouTubeDLInstanceObserver> _executingInstances_SourceList;
-        public IObservableList<YouTubeDLInstanceObserver> ExecutingInstances { get; }
+        private readonly ISourceList<YouTubeDLInstanceHandler> _executingInstances_SourceList;
+        public IObservableList<YouTubeDLInstanceHandler> ExecutingInstances { get; }
 
-        private Task ExecuteCommandAsync(DownloadCommand command)
+        private async Task<bool> DownloadBinariesAsync()
+        {
+            using (var writeAccess = await this._exeRWLock.WriterLockAsync())
+            {
+                var client = new WebClient();
+                try
+                {
+                    var youTubeDLExeDirPath = Path.GetDirectoryName(this.ExeFileLocation.LocalPath);
+                    if (!Directory.Exists(youTubeDLExeDirPath))
+                    {
+                        Directory.CreateDirectory(youTubeDLExeDirPath);
+                    }
+                    //await client.DownloadFileTaskAsync(YouTubeDLService.DirectDownloadLink, this.ExeFilePath);
+                    //return true;
+                    return await this._fileSystemService.DownloadFileAsync(YouTubeDL.DirectDownloadUrl, this.ExeFileLocation.LocalPath);
+                }
+                catch (Exception)
+                {
+                    // TODO: handle & log
+                    return false;
+                }
+                finally
+                {
+                    this.IsBusy = false;
+                }
+            }
+        }
+        public async Task<bool> UpdateAsync()
+        {
+            try
+            {
+                using (var writeAccess = await this._exeRWLock.WriterLockAsync())
+                {
+                    var wasUpdateSuccessful = (await this.ExecuteAsync("-U")).ExitCode == 0;
+                    return wasUpdateSuccessful;
+                }
+            }
+            // if cannot find youtube-dl client, dowlonad it
+            catch (FileNotFoundException)
+            {
+                return await this.DownloadBinariesAsync();
+            }
+            // cant remember
+            catch (Win32Exception)
+            {
+                return await this.DownloadBinariesAsync();
+            }
+            catch (Exception)
+            {
+                // TODO: handle & log
+                return false;
+                //return Task.FromResult(false);            
+            }
+        }
+
+        public async Task ExecuteAsync(IYouTubeDLCommand command)
         {
             // TODO: verify what happens when concurrently downloading same URL + same options multiple times
-            var obs = new YouTubeDLInstanceObserver(this.ExeFileLocation, command);
+            var obs = new YouTubeDLInstanceHandler(this.ExeFileLocation, command);
+
+            switch (command.Type)
+            {
+                case YouTubeDLCommandType.Download:
+                    await this._exeRWLock.ReaderLockAsync();
+                    break;
+
+                case YouTubeDLCommandType.Update:
+                    await this._exeRWLock.WriterLockAsync();
+                    break;
+
+            }
 
             this._executingInstances_SourceList.Edit(list =>
             {
                 list.Add(obs);
             });
 
-            obs.WhenStatusChanged.Where(status =>
-                status == YouTubeDLInstanceObserverStatus.Completed
-                || status == YouTubeDLInstanceObserverStatus.Canceled
-                || status == YouTubeDLInstanceObserverStatus.Failed)
+            obs.WhenStatusChanged
+                .Where(status =>
+                {
+                    return status == YouTubeDLInstanceStatus.Completed
+                        || status == YouTubeDLInstanceStatus.Canceled
+                        || status == YouTubeDLInstanceStatus.Failed;
+                })
                 .Subscribe(x =>
                 {
 
                 })
                 .DisposeWith(this._disposables); // TODO: handle the best way, prevent closing, unsub when download canceled
 
-            obs.ExecuteAsync().ConfigureAwait(false);
-
-            return Task.CompletedTask;
+            await obs.ExecuteAsync().ConfigureAwait(false);
         }
-
-        private async Task<bool> DownloadYouTubeDLClientAsync()
+        private async Task<ProcessResults> ExecuteAsync(string arguments)
         {
-            this.IsBusy = true;
-
-            var client = new WebClient();
-            try
-            {
-                var youTubeDLExeDirPath = Path.GetDirectoryName(this.ExeFileLocation.LocalPath);
-                if (!Directory.Exists(youTubeDLExeDirPath))
-                {
-                    Directory.CreateDirectory(youTubeDLExeDirPath);
-                }
-                //await client.DownloadFileTaskAsync(YouTubeDLService.DirectDownloadLink, this.ExeFilePath);
-                //return true;
-                return await this._fileSystemService.DownloadFileAsync(YouTubeDL.DirectDownloadUrl, this.ExeFileLocation.LocalPath);
-            }
-            catch (Exception)
-            {
-                // TODO: handle & log
-                return false;
-            }
-            finally
-            {
-                this.IsBusy = false;
-            }
-        }
-
-        private async Task<ProcessResults> ExecuteYouTubeDLAsync(string arguments)
-        {
-            this.IsBusy = true;
-
             var psi = new ProcessStartInfo()
             {
                 Arguments = arguments,
@@ -130,39 +172,7 @@ namespace youtube_dl.WPF.Core
             };
             var res = await ProcessUtils.RunAsync(psi);
 
-            this.IsBusy = false;
-
             return res;
-        }
-
-        public async Task<bool> UpdateAsync()
-        {
-            try
-            {
-                await this._isBusySemaphore.WaitAsync();
-
-                this.IsBusy = true;
-
-                var updateResult = (await this.ExecuteYouTubeDLAsync("-U")).ExitCode == 0;
-
-                this.IsBusy = false;
-
-                return updateResult;
-            }
-            catch (FileNotFoundException)
-            {
-                return await this.DownloadYouTubeDLClientAsync();
-            }
-            catch (Win32Exception)
-            {
-                return await this.DownloadYouTubeDLClientAsync();
-            }
-            catch (Exception)
-            {
-                // TODO: handle & log
-                return false;
-                //return Task.FromResult(false);
-            }
         }
 
         #region IDisposable

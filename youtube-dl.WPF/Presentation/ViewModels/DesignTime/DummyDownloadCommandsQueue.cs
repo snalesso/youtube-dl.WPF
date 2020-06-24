@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using DynamicData;
 using ReactiveUI;
-using youtube_dl.WPF.Core.Models;
+using youtube_dl.WPF.Core.Queue;
 using youtube_dl.WPF.Presentation.ViewModels.DesignTime;
 
 namespace youtube_dl.WPF.Core.Services
@@ -16,15 +16,27 @@ namespace youtube_dl.WPF.Core.Services
         {
             var dummyEntries = new[]
             {
-                new DownloadCommand("https://www.youtube.com/watch?v=WeHEhrj6vEc", new DownloadCommandOptions(DownloadMode.AudioVideo)),
+                new DownloadCommand("https://www.youtube.com/watch?v=WeHEhrj6vEc"
+                , new DownloadCommandOptions(
+                    //DownloadMode.AudioVideo
+                    //new AudioFormat(), new VideoFormat()
+                    new IYouTubeDLQualitySelector[] {
+                        new GenericQualitySelector(YouTubeDLQuality.Worst)
+                    }
+                )),
                 new DownloadCommand(
-                    new []
-                    {
-                        "https://www.youtube.com/watch?v=0ggg_iCrE6I",
-                        "https://www.youtube.com/watch?v=HGlIImajcRI",
-                        "https://www.youtube.com/watch?v=tsPxaAVg584"
-                    },
-                    new DownloadCommandOptions(DownloadMode.AudioOnly)),
+                    //new []
+                    //{
+                        "https://www.youtube.com/watch?v=0ggg_iCrE6I"
+                        //, "https://www.youtube.com/watch?v=HGlIImajcRI"
+                        //, "https://www.youtube.com/watch?v=tsPxaAVg584"
+                    //}
+                    , new DownloadCommandOptions(
+                        //DownloadMode.AudioOnly)
+                    
+                    new IYouTubeDLQualitySelector[] {
+                        new GenericQualitySelector(YouTubeDLQuality.Best)
+                    })                    ),
             };
 
             this.Enqueue(dummyEntries);

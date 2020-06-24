@@ -9,6 +9,8 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
 using youtube_dl.WPF.Core;
+using youtube_dl.WPF.Core.History;
+using youtube_dl.WPF.Core.Queue;
 using youtube_dl.WPF.Core.Services;
 using youtube_dl.WPF.Presentation.Services;
 using youtube_dl.WPF.Presentation.ViewModels;
@@ -80,7 +82,7 @@ namespace youtube_dl.WPF.Presentation.Composition.Autofac
 
             // ViewModels
 
-            builder.RegisterType<AddDownloadQueueEntryViewModel>().AsSelf().InstancePerLifetimeScope();
+            //builder.RegisterType<AddDownloadQueueEntryViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<NewDownloadCommandViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DownloadQueueViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DownloadViewModel>().AsSelf().InstancePerLifetimeScope();

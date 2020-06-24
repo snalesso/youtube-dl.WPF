@@ -5,7 +5,8 @@ using System.Reactive.Disposables;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace youtube_dl.WPF.Core.Models
+
+namespace youtube_dl.WPF.Core.Queue
 {
     public class EnqueuedDownloadCommand : ValueObject<EnqueuedDownloadCommand>
     {

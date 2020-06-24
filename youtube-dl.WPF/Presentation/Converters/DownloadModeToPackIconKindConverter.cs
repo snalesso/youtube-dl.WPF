@@ -7,7 +7,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
 using MaterialDesignThemes.Wpf;
-using youtube_dl.WPF.Core.Models;
+using youtube_dl.WPF.Core;
+
 
 namespace youtube_dl.WPF.Presentation.Converters
 {

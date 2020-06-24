@@ -11,6 +11,7 @@ using DynamicData.Alias;
 using DynamicData.PLinq;
 using ReactiveUI;
 using youtube_dl.WPF.Core;
+using youtube_dl.WPF.Core.Queue;
 using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels

@@ -6,7 +6,8 @@ using System.Linq;
 using System.Reactive;
 using System.Text;
 using System.Threading.Tasks;
-using youtube_dl.WPF.Core.Models;
+using youtube_dl.WPF.Core;
+
 using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
@@ -38,7 +39,8 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             this._downloadModeKey
             ?? (this._downloadModeKey = typeof(DownloadMode).GetEnumName(this.DownloadMode));
 
-        public IReadOnlyList<string> Urls => this.DownloadQueueEntry.Urls;
+        //public IReadOnlyList<string> URLs => this.DownloadQueueEntry.URLs;
+        public string URL => this.DownloadQueueEntry.URL;
 
         //public ReactiveCommand<Unit, Unit> Download { get; }
     }

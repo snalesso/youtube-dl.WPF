@@ -11,7 +11,8 @@ using System.Reactive.Subjects;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using youtube_dl.WPF.Core.Models;
+using youtube_dl.WPF.Core;
+using youtube_dl.WPF.Core.Queue;
 using youtube_dl.WPF.Core.Services;
 
 namespace youtube_dl.WPF.Presentation.ViewModels

@@ -11,7 +11,8 @@ namespace youtube_dl.WPF.Presentation.ViewModels.DesignTime
     {
         public DesignTimeDownloadViewModel() : base(
             DummyDownloadCommandsQueue.Instance,
-            DummyYouTubeDL.Instance)
+            DummyYouTubeDL.Instance,
+            DummyFileSystemService.Instance)
         {
         }
     }
