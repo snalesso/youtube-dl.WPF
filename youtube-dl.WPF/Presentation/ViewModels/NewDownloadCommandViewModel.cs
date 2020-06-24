@@ -50,11 +50,10 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                                 new DownloadCommand(
                                     clipboardUrl,
                                     new DownloadCommandOptions(
-                                        //this.SelectedDownloadMode
-                                        new IYouTubeDLQualitySelector[] {
+                                        new IYouTubeDLQualitySelector[]
+                                        {
                                             new GenericQualitySelector(YouTubeDLQuality.Best)
-                                        }
-                                        )));
+                                        })));
                         }
                     }
                 });
@@ -66,12 +65,13 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 {
                     foreach (var url in URLsHelper.ParseUrlsList(this.Url))
                     {
-                        this._downloadCommandsQueue.Enqueue(new DownloadCommand(url, new DownloadCommandOptions(
-                                        //this.SelectedDownloadMode
-                                        new IYouTubeDLQualitySelector[] {
-                                            new GenericQualitySelector(YouTubeDLQuality.Worst)
-                                        }
-                                        )));
+                        this._downloadCommandsQueue.Enqueue(
+                            new DownloadCommand(url,
+                                new DownloadCommandOptions(
+                                    new IYouTubeDLQualitySelector[]
+                                    {
+                                        new GenericQualitySelector(YouTubeDLQuality.Worst)
+                                    })));
                     }
                     this.Url = null;
                 },
