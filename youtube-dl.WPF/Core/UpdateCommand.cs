@@ -11,6 +11,8 @@ namespace youtube_dl.WPF.Core
             yield return this.Type;
         }
 
+        public string Serialize() => "-U";
+
         public static UpdateCommand Default { get => new UpdateCommand(); }
 
         public IYouTubeDLCommandOptions Options => throw new System.NotSupportedException();

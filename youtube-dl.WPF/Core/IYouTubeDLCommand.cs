@@ -10,10 +10,14 @@ namespace youtube_dl.WPF.Core
     {
         YouTubeDLCommandType Type { get; }
         IYouTubeDLCommandOptions Options { get; }
+
+        [Obsolete("Move to mixins/external serializer?")]
+        string Serialize();
     }
 
     public interface IYouTubeDLCommandOptions
     {
+        [Obsolete("Move to mixins/external serializer?")]
         string Serialize();
     }
 }

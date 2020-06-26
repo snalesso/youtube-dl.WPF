@@ -3,6 +3,7 @@ using Caliburn.Micro.ReactiveUI;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Disposables;
@@ -21,11 +22,16 @@ namespace youtube_dl.WPF.Presentation.ViewModels
     public class NewDownloadCommandViewModel : ReactiveScreen
     {
         private readonly DownloadCommandsQueue _downloadCommandsQueue;
+
         private readonly CompositeDisposable _disposables = new CompositeDisposable();
 
-        public NewDownloadCommandViewModel(DownloadCommandsQueue downloadCommandsQueue)
+        public NewDownloadCommandViewModel(
+            DownloadCommandsQueue downloadCommandsQueue,
+            Func<IObservable<DownloadMode>, PostProcessingViewModel> postProcessingViewModel_FactoryMethod)
         {
             this._downloadCommandsQueue = downloadCommandsQueue ?? throw new ArgumentNullException(nameof(downloadCommandsQueue));
+            this.PostProcessingViewModel = (postProcessingViewModel_FactoryMethod ?? throw new ArgumentNullException(nameof(postProcessingViewModel_FactoryMethod)))
+                .Invoke(this.WhenAny(x => x.SelectedDownloadMode, x => x.Value));
 
             this.ReadClipboard = ReactiveCommand.Create(() => Clipboard.GetText(TextDataFormat.Text));
             this.ReadClipboard.Subscribe(
@@ -49,11 +55,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                             this._downloadCommandsQueue.Enqueue(
                                 new DownloadCommand(
                                     clipboardUrl,
-                                    new DownloadCommandOptions(
-                                        new IYouTubeDLQualitySelector[]
-                                        {
-                                            new GenericQualitySelector(YouTubeDLQuality.Best)
-                                        })));
+                                    new DownloadCommandOptions()));
                         }
                     }
                 });
@@ -66,12 +68,9 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                     foreach (var url in URLsHelper.ParseUrlsList(this.Url))
                     {
                         this._downloadCommandsQueue.Enqueue(
-                            new DownloadCommand(url,
-                                new DownloadCommandOptions(
-                                    new IYouTubeDLQualitySelector[]
-                                    {
-                                        new GenericQualitySelector(YouTubeDLQuality.Worst)
-                                    })));
+                            new DownloadCommand(
+                                url,
+                                new DownloadCommandOptions()));
                     }
                     this.Url = null;
                 },
@@ -79,6 +78,8 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             this.Enqueue.ThrownExceptions.Subscribe(ex => Console.WriteLine(ex.ToString())).DisposeWith(this._disposables);
             this.Enqueue.DisposeWith(this._disposables);
         }
+
+        public PostProcessingViewModel PostProcessingViewModel { get; }
 
         private string _url;
         public string Url
@@ -119,6 +120,10 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             set { this.RaiseAndSetIfChanged(ref this._selectedDownloadMode, value); }
         }
         public VideoContainerFormat? VideoContainerFormat { get; }
+
+        public IReadOnlyList<IYouTubeDLQualitySelector> QualitySelectors { get; } = Workarounds.DefaultYouTubeDLQualitySelectors.ToImmutableArray();
+        [Obsolete]
+        public string QualitySelectorsString => this.QualitySelectors?.Serialize();
 
         public ReactiveCommand<Unit, string> ReadClipboard { get; }
         // TODO: this command duplicates implementation. Simplify.

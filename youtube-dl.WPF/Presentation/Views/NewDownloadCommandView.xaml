@@ -8,11 +8,12 @@
     xmlns:MarkupExtensions="clr-namespace:youtube_dl.WPF.Presentation.MarkupExtensions"
     xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:Views="clr-namespace:youtube_dl.WPF.Presentation.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:fa5="http://schemas.fontawesome.com/icons/"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DataContext="{d:DesignInstance Type=DesignTimeViewModels:DesignTimeNewDownloadCommandViewModel,
-                                     IsDesignTimeCreatable=False}"
+                                     IsDesignTimeCreatable=True}"
     mc:Ignorable="d">
 
     <UserControl.Resources>
@@ -29,52 +30,59 @@
     </UserControl.Resources>
 
     <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="8" />
-            <ColumnDefinition />
-            <ColumnDefinition Width="8" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="8" />
-            <ColumnDefinition Width="Auto" />
-            <ColumnDefinition Width="8" />
-            <ColumnDefinition Width="Auto" />
-        </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="8" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <Button
-            Grid.Column="0"
-            VerticalAlignment="Center"
-            Command="{Binding ReadClipboard}"
-            ToolTip="Paste copied text">
-            <Button.Content>
-                <MaterialDesign:PackIcon
-                    Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                    Height="Auto"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                    Kind="ContentCopy" />
-            </Button.Content>
-        </Button>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <TextBox
-            Grid.RowSpan="2"
-            Grid.Column="2"
-            MinWidth="380"
-            HorizontalAlignment="Stretch"
-            VerticalContentAlignment="Center"
-            MaterialDesign:HintAssist.Hint="URLs"
-            MaterialDesign:HintAssist.IsFloating="False"
-            MaterialDesign:TextFieldAssist.HasClearButton="True"
-            AcceptsReturn="False"
-            AcceptsTab="False"
-            Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" />
+            <Button
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Command="{Binding ReadClipboard}"
+                ToolTip="Paste copied text">
+                <Button.Content>
+                    <MaterialDesign:PackIcon
+                        Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                        Height="Auto"
+                        HorizontalAlignment="Center"
+                        VerticalAlignment="Center"
+                        Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
+                        Kind="ContentCopy" />
+                </Button.Content>
+            </Button>
 
-        <!--<Grid
+            <TextBox
+                Grid.RowSpan="2"
+                Grid.Column="2"
+                MinWidth="450"
+                HorizontalAlignment="Stretch"
+                VerticalContentAlignment="Center"
+                MaterialDesign:HintAssist.Hint="URLs"
+                MaterialDesign:HintAssist.IsFloating="False"
+                MaterialDesign:TextFieldAssist.HasClearButton="True"
+                AcceptsReturn="False"
+                AcceptsTab="False"
+                Text="{Binding Url, UpdateSourceTrigger=PropertyChanged}" />
+
+            <!--<Grid
             Grid.Column="4"
             HorizontalAlignment="Center"
             VerticalAlignment="Center">
@@ -116,80 +124,90 @@
             </RadioButton>
 
         </Grid>-->
+            
+        </Grid>
 
-        <Grid
-            Grid.Column="4"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center">
+        <Grid Grid.Row="2" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="8"/>
                 <ColumnDefinition Width="Auto" />
-                <ColumnDefinition Width="0" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <RadioButton
-                Grid.Column="0"
-                VerticalAlignment="Center"
-                IsChecked="{Binding Path=SelectedDownloadMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static Core:DownloadMode.AudioOnly}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Style="{StaticResource MaterialDesignTabRadioButton}"
-                ToolTip="Download as audio">
-                <RadioButton.Content>
-                    <MaterialDesign:PackIcon
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Kind="Music" />
-                </RadioButton.Content>
-            </RadioButton>
-            <RadioButton
+            <TextBlock VerticalAlignment="Center" Text="Download" Grid.Column="0" />
+
+            <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Grid.Column="2">
+
+                <RadioButton
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding Path=SelectedDownloadMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static Core:DownloadMode.AudioOnly}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    ToolTip="Download as audio">
+                    <RadioButton.Content>
+                        <MaterialDesign:PackIcon
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Kind="Music" />
+                    </RadioButton.Content>
+                </RadioButton>
+                <RadioButton
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding Path=SelectedDownloadMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static Core:DownloadMode.AudioVideo}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    ToolTip="Download as video">
+                    <RadioButton.Content>
+                        <MaterialDesign:PackIcon
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Kind="Video" />
+                    </RadioButton.Content>
+                </RadioButton>
+
+            </StackPanel>
+
+        </Grid>
+        
+        <TextBlock Grid.Row="4" Text="{Binding QualitySelectorsString}" />
+
+        <Grid Grid.Row="6">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock VerticalAlignment="Center" Grid.Column="0" Text="Convert to" />
+
+            <Views:PostProcessingView
                 Grid.Column="2"
-                VerticalAlignment="Center"
-                IsChecked="{Binding Path=SelectedDownloadMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static Core:DownloadMode.AudioVideo}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                Style="{StaticResource MaterialDesignTabRadioButton}"
-                ToolTip="Download as video">
-                <RadioButton.Content>
-                    <MaterialDesign:PackIcon
-                        HorizontalAlignment="Left"
-                        VerticalAlignment="Center"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        Kind="Video" />
-                </RadioButton.Content>
-            </RadioButton>
+                VerticalAlignment="Stretch"
+                DataContext="{Binding PostProcessingViewModel}" />
 
         </Grid>
 
-        <Button
-            Grid.Column="6"
-            VerticalAlignment="Center"
-            Command="{Binding Enqueue}"
-            ToolTip="Enqueue URL with selected options">
-            <Button.Content>
-                <MaterialDesign:PackIcon
-                    Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                    Height="Auto"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                    Kind="Plus" />
-            </Button.Content>
-        </Button>
+        <Grid Grid.Row="8" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
 
-        <Button
-            Grid.Column="8"
-            VerticalAlignment="Center"
-            Command="{Binding EnqueueFromClipboard}"
-            ToolTip="Enqueue URL from clipboard using selected options">
-            <Button.Content>
-                <StackPanel Orientation="Horizontal">
-                    <MaterialDesign:PackIcon
-                        Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
-                        Height="Auto"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
-                        Kind="ContentCopy" />
+            <Button
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Command="{Binding Enqueue}"
+                ToolTip="Enqueue URL with selected options">
+                <Button.Content>
                     <MaterialDesign:PackIcon
                         Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
                         Height="Auto"
@@ -197,9 +215,105 @@
                         VerticalAlignment="Center"
                         Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
                         Kind="Plus" />
-                </StackPanel>
-            </Button.Content>
-        </Button>
+                </Button.Content>
+            </Button>
+
+            <Button
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                Command="{Binding EnqueueFromClipboard}"
+                ToolTip="Enqueue URL from clipboard using selected options">
+                <Button.Content>
+                    <StackPanel Orientation="Horizontal">
+                        <MaterialDesign:PackIcon
+                            Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                            Height="Auto"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
+                            Kind="ContentCopy" />
+                        <MaterialDesign:PackIcon
+                            Width="{Binding Height, Mode=OneWay, RelativeSource={RelativeSource Self}}"
+                            Height="Auto"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}"
+                            Kind="Plus" />
+                    </StackPanel>
+                </Button.Content>
+            </Button>
+
+        </Grid>
+
+        <!--<Grid Grid.Row="2" VerticalAlignment="Center">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="8" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Orientation="Horizontal">
+
+                <RadioButton
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding Path=SelectedDownloadMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static Core:DownloadMode.AudioOnly}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    ToolTip="Download as audio">
+                    <RadioButton.Content>
+                        <MaterialDesign:PackIcon
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Kind="Music" />
+                    </RadioButton.Content>
+                </RadioButton>
+                <RadioButton
+                    Grid.Column="2"
+                    VerticalAlignment="Center"
+                    IsChecked="{Binding Path=SelectedDownloadMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static Core:DownloadMode.AudioVideo}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    Style="{StaticResource MaterialDesignTabRadioButton}"
+                    ToolTip="Download as video">
+                    <RadioButton.Content>
+                        <MaterialDesign:PackIcon
+                            HorizontalAlignment="Left"
+                            VerticalAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            Kind="Video" />
+                    </RadioButton.Content>
+                </RadioButton>
+
+            </StackPanel>
+
+            <Grid Grid.Column="2">
+
+                <ComboBox
+                    Width="Auto"
+                    MinWidth="120"
+                    SelectedIndex="2">
+                    <ComboBoxItem>Don't convert</ComboBoxItem>
+                    <ComboBoxItem>mp4</ComboBoxItem>
+                    <ComboBoxItem>mkv</ComboBoxItem>
+                    <ComboBoxItem>avi</ComboBoxItem>
+                    <ComboBoxItem>ogg</ComboBoxItem>
+                </ComboBox>
+
+                <ComboBox
+                    Width="Auto"
+                    MinWidth="120"
+                    SelectedIndex="2">
+                    <ComboBoxItem>Don't convert</ComboBoxItem>
+                    <ComboBoxItem>mp4</ComboBoxItem>
+                    <ComboBoxItem>mkv</ComboBoxItem>
+                    <ComboBoxItem>avi</ComboBoxItem>
+                    <ComboBoxItem>ogg</ComboBoxItem>
+                </ComboBox>
+
+            </Grid>
+
+        </Grid>-->
 
     </Grid>
 </UserControl>

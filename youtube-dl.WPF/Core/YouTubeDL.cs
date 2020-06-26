@@ -47,25 +47,24 @@ namespace youtube_dl.WPF.Core
 
             this._executingInstances_SourceList = new SourceList<YouTubeDLInstanceHandler>().DisposeWith(this._disposables);
             this.ExecutingInstances = this._executingInstances_SourceList.AsObservableList();
-            this._whenIsBusyChanged_BehaviorSubject = new BehaviorSubject<bool>(false).DisposeWith(this._disposables);
+            //this._whenIsBusyChanged_BehaviorSubject = new BehaviorSubject<bool>(false).DisposeWith(this._disposables);
         }
 
         public Uri ExeFileLocation { get; } // = new Uri( "youtube-dl\\youtube-dl.exe");
-        public Uri DownloadsFolderLocation { get; } = new Uri(Path.Combine("D" + Path.VolumeSeparatorChar + Path.DirectorySeparatorChar, "Downloads", YouTubeDL.OfficialName)); // Path.Combine(Path.GetDirectoryName(this.ExeFilePath), "downloads");
+        [Obsolete("Each command has its own -o location")]
+        public Uri DownloadsFolderLocation { get; } = new Uri(Path.Combine("E" + Path.VolumeSeparatorChar + Path.DirectorySeparatorChar, "Downloads", YouTubeDL.OfficialName)); // Path.Combine(Path.GetDirectoryName(this.ExeFilePath), "downloads");
 
-        // TODO: use semaphore
-        private readonly SemaphoreSlim _isBusySemaphore = new SemaphoreSlim(1, 1);
-        public bool IsBusy
-        {
-            get
-            {
-                //return this._isBusySemaphore.CurrentCount > 0;
-                return this._whenIsBusyChanged_BehaviorSubject.Value;
-            }
-            private set { this._whenIsBusyChanged_BehaviorSubject.OnNext(value); }
-        }
-        private readonly BehaviorSubject<bool> _whenIsBusyChanged_BehaviorSubject;
-        public IObservable<bool> WhenIsBusyChanged => this._whenIsBusyChanged_BehaviorSubject.DistinctUntilChanged();
+        //public bool IsBusy
+        //{
+        //    get
+        //    {
+        //        //return this._isBusySemaphore.CurrentCount > 0;
+        //        return this._whenIsBusyChanged_BehaviorSubject.Value;
+        //    }
+        //    private set { this._whenIsBusyChanged_BehaviorSubject.OnNext(value); }
+        //}
+        //private readonly BehaviorSubject<bool> _whenIsBusyChanged_BehaviorSubject;
+        //public IObservable<bool> WhenIsBusyChanged => this._whenIsBusyChanged_BehaviorSubject.DistinctUntilChanged();
 
         private readonly ISourceList<YouTubeDLInstanceHandler> _executingInstances_SourceList;
         public IObservableList<YouTubeDLInstanceHandler> ExecutingInstances { get; }
@@ -93,7 +92,7 @@ namespace youtube_dl.WPF.Core
                 }
                 finally
                 {
-                    this.IsBusy = false;
+                    //this.IsBusy = false;
                 }
             }
         }
@@ -124,51 +123,59 @@ namespace youtube_dl.WPF.Core
                 //return Task.FromResult(false);            
             }
         }
-
-        public async Task ExecuteAsync(IYouTubeDLCommand command)
+        public async Task ExecuteCommandAsync(IYouTubeDLCommand command)
         {
             // TODO: verify what happens when concurrently downloading same URL + same options multiple times
-            var obs = new YouTubeDLInstanceHandler(this.ExeFileLocation, command);
+            var instanceHandler = new YouTubeDLInstanceHandler(this.ExeFileLocation, command);
 
+            IDisposable exeLock = null;
+
+            // identify lock type
             switch (command.Type)
             {
                 case YouTubeDLCommandType.Download:
-                    await this._exeRWLock.ReaderLockAsync();
+                    exeLock = await this._exeRWLock.ReaderLockAsync();
                     break;
 
                 case YouTubeDLCommandType.Update:
-                    await this._exeRWLock.WriterLockAsync();
+                    exeLock = await this._exeRWLock.WriterLockAsync();
                     break;
-
             }
 
-            this._executingInstances_SourceList.Edit(list =>
-            {
-                list.Add(obs);
-            });
-
-            obs.WhenStatusChanged
-                .Where(status =>
-                {
-                    return status == YouTubeDLInstanceStatus.Completed
-                        || status == YouTubeDLInstanceStatus.Canceled
-                        || status == YouTubeDLInstanceStatus.Failed;
-                })
+            // configure YT-DL instance process handler
+            // TODO: create a disposable that destroys the instance when downloads are canceled forcedly
+            instanceHandler
+                .WhenProcessEnded()
+                //.LastAsync(x =>
                 .Subscribe(x =>
                 {
-
+                    exeLock.Dispose();
+                    this._executingInstances_SourceList.Edit(list => list.Remove(instanceHandler));
                 })
                 .DisposeWith(this._disposables); // TODO: handle the best way, prevent closing, unsub when download canceled
 
-            await obs.ExecuteAsync().ConfigureAwait(false);
+            this._executingInstances_SourceList.Edit(
+                //async 
+                list =>
+            {
+                list.Add(instanceHandler);
+                //await instanceHandler.ExecuteAsync();
+            });
+
+            await instanceHandler.ExecuteAsync().ConfigureAwait(false);
         }
+
         private async Task<ProcessResults> ExecuteAsync(string arguments)
         {
             var psi = new ProcessStartInfo()
             {
                 Arguments = arguments,
                 FileName = this.ExeFileLocation.LocalPath,
+#if DEBUG
                 CreateNoWindow = true
+#else
+                CreateNoWindow = false
+#endif
             };
             var res = await ProcessUtils.RunAsync(psi);
 

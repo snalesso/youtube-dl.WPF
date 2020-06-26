@@ -74,7 +74,7 @@
 
         </Grid>
 
-        <ListView
+        <!--<ListView
             Grid.Row="3"
             MinHeight="180"
             ItemsSource="{Binding DownloadQueueEntryViewModels}"
@@ -102,36 +102,54 @@
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
-        </ListView>
+        </ListView>-->
 
-        <!--<ListBox ScrollViewer.VerticalScrollBarVisibility="Visible"
+        <ListBox
             Grid.Row="3"
-            MinHeight="180"
+            MinWidth="600"
+            MinHeight="200"
+            HorizontalAlignment="Stretch"
+            HorizontalContentAlignment="Stretch"
             ItemsSource="{Binding DownloadQueueEntryViewModels}"
-            SelectedItem="{Binding SelectedDownloadQueueEntryViewModel}">
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            SelectedItem="{Binding SelectedDownloadQueueEntryViewModel}"
+            Style="{StaticResource MaterialDesignListBox}">
             <ListBox.ItemTemplate>
                 <DataTemplate>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="*" />
+                            <!--<ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="Auto" />-->
+                        </Grid.ColumnDefinitions>
 
-                    <Expander Grid.Column="2" Style="{StaticResource MaterialDesignExpander}">
-                        <Expander.Header>
-                            <StackPanel Orientation="Horizontal">
-                                <MaterialDesign:PackIcon
-                                    HorizontalAlignment="Center"
-                                    VerticalAlignment="Center"
-                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListViewItem}}}"
-                                    Kind="{Binding DownloadMode, Converter={StaticResource DownloadModeToPackIconKindConverter}, Mode=OneTime}" />
-                                <TextBlock Text="{Binding URLs.Count, StringFormat=\{0\} URLs}" />
-                            </StackPanel>
-                        </Expander.Header>
+                        <MaterialDesign:PackIcon
+                            Grid.Column="0"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}"
+                            Kind="{Binding DownloadMode, Converter={StaticResource DownloadModeToPackIconKindConverter}, Mode=OneTime}" />
 
-                        <Expander.Content>
-                            <TextBlock Text="{Binding URLs, Converter={StaticResource IEnumerableOfStringsJoiner}, Mode=OneTime}" ToolTip="{Binding URLs}" />
-                        </Expander.Content>
-                    </Expander>
+                        <TextBlock
+                            Grid.Column="2"
+                            VerticalAlignment="Center"
+                            Text="{Binding URL, Mode=OneTime}" />
 
+                        <!--<Button IsHitTestVisible="False"
+                            Grid.Column="4"
+                            VerticalAlignment="Center"
+                            Style="{StaticResource MaterialDesignToolButton}">
+                            <Button.Content>
+                                <MaterialDesign:PackIcon Kind="Close" />
+                            </Button.Content>
+                        </Button>-->
+
+                    </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-        </ListBox-->
+        </ListBox>
 
         <!--<TreeView
             Grid.Row="3"

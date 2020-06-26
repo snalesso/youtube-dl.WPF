@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 namespace youtube_dl.WPF.Core
 {
+    // TODO: add option to convert audio if downloaded audio's codec is lossless
     public class DownloadCommandOptions : ValueObject<DownloadCommandOptions>, IYouTubeDLCommandOptions
     {
         //[Obsolete]
@@ -36,24 +37,7 @@ namespace youtube_dl.WPF.Core
 
         public DownloadCommandOptions(IEnumerable<IYouTubeDLQualitySelector> qualitySelectors = null)
         {
-            this.QualitySelectors = (qualitySelectors ??
-                new IYouTubeDLQualitySelector[] {
-                    new AudioVideoQualitySelector(
-                        YouTubeDLQuality.Best,
-                        YouTubeDLQuality.Best,
-                        videoFilters_Numeric: new Dictionary<NumericField, NumericFilter>
-                        {
-                            { NumericField.height, new NumericFilter(NumericField.height, NumericComparisons.EqualsTo, VideoResolution.FHD.Height.ToString(), areUnknownIncluded: true) },
-                        }),
-                    new GenericQualitySelector(
-                        YouTubeDLQuality.Best,
-                        filters_Numeric: new Dictionary<NumericField, NumericFilter>
-                        {
-                            { NumericField.height, new NumericFilter(NumericField.height, NumericComparisons.EqualsTo, VideoResolution.FHD.Height.ToString(), areUnknownIncluded: true) },
-                        }),
-                    new GenericQualitySelector(YouTubeDLQuality.Best)
-                })
-                .ToImmutableArray();
+            this.QualitySelectors = (qualitySelectors ?? Workarounds.DefaultYouTubeDLQualitySelectors).ToImmutableArray();
         }
 
         // FORMAT
@@ -75,7 +59,7 @@ namespace youtube_dl.WPF.Core
         [YouTubeDLParamKeys("--embed-subs")]
         public bool EmbedSubs { get; } = false;
         [YouTubeDLParamKeys("--embed-thumbnail")]
-        public bool EmbedThumbnail { get; } = true;
+        public bool EmbedThumbnail { get; } = false; // TODO: true is unsupported, triggers: "AtomicParsley was not found. Please install"
         [YouTubeDLParamKeys("--prefer-ffmpeg")]
         public bool PreferFFmpeg { get; } = true;
         [YouTubeDLParamKeys("--ffmpeg-location")]
@@ -106,7 +90,7 @@ namespace youtube_dl.WPF.Core
                 // FILESYSTEM
 
                 // output location and file name format
-                $"-o \"{Path.GetFullPath(Path.Combine("E:\\Downloads\\youtube-dl\\video", this.OutputFileNameFormat))}\"",
+                $"-o \"{Path.GetFullPath(Path.Combine(this.OutputFolderPath, this.OutputFileNameFormat))}\"",
 
                 // POST PORCESSING
 
@@ -120,12 +104,12 @@ namespace youtube_dl.WPF.Core
             argsList.AddIf(this.EmbedThumbnail, "--embed-thumbnail");
             argsList.AddIf(this.EmbedSubs, "--embed-subs");
 
-            argsList.AddIf(this.QualitySelectors != null, $"--format {this.QualitySelectors.Serialize()}");
+            argsList.AddIf(this.QualitySelectors != null, $"--format \"{this.QualitySelectors.Serialize()}\"");
 
             switch (this.DownloadMode)
             {
                 case DownloadMode.AudioOnly:
-                    argsList.Add("--format bestaudio/best");
+                    //argsList.Add("--format bestaudio/best");
                     argsList.Add("--extract-audio");
                     argsList.AddIf(this.OutputAudioCodec.HasValue, $"--audio-format {this.OutputAudioCodec.ToString().ToLowerInvariant()}");
                     break;

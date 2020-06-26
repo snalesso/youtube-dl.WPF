@@ -5,6 +5,7 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using DynamicData;
@@ -28,8 +29,8 @@ namespace youtube_dl.WPF.Core
             this._outputsSourceList = new SourceList<string>().DisposeWith(this._disposables);
             this._errorsSourceList = new SourceList<string>().DisposeWith(this._disposables);
 
-            this._whenDownloadStatusChanged_behaviorSubject = new BehaviorSubject<YouTubeDLInstanceStatus>(YouTubeDLInstanceStatus.Ready).DisposeWith(this._disposables);
-            this.WhenStatusChanged = this._whenDownloadStatusChanged_behaviorSubject.DistinctUntilChanged();
+            this._whenStatusChanged_behaviorSubject = new BehaviorSubject<YouTubeDLInstanceStatus>(YouTubeDLInstanceStatus.Ready).DisposeWith(this._disposables);
+            this.WhenStatusChanged = this._whenStatusChanged_behaviorSubject.DistinctUntilChanged();
         }
 
         public IYouTubeDLCommand Command { get; }
@@ -39,10 +40,12 @@ namespace youtube_dl.WPF.Core
         {
             var psi = new ProcessStartInfo()
             {
-                Arguments = this.Command.Options.Serialize(),
+                Arguments = this.Command.Serialize(),
                 FileName = this._youtubeDlExeFilePath.LocalPath,
-                CreateNoWindow = true
+                CreateNoWindow = false
             };
+
+            this.Status = YouTubeDLInstanceStatus.Executing;
 
             return ProcessUtils.RunAsync(
                psi,
@@ -50,12 +53,9 @@ namespace youtube_dl.WPF.Core
                error => this._errorsSourceList.Edit(list => list.Add(error)),
                (exitCode) =>
                {
-                   this._whenDownloadStatusChanged_behaviorSubject.OnNext(
-                       exitCode == 0
+                   this.Status = (exitCode == 0
                        ? YouTubeDLInstanceStatus.Completed
                        : YouTubeDLInstanceStatus.Failed);
-                   // TODO: verify .OnCompleted() needed
-                   this._whenDownloadStatusChanged_behaviorSubject.OnCompleted();
                },
                cancellationToken);
         }
@@ -70,11 +70,27 @@ namespace youtube_dl.WPF.Core
         //    }
         //}
 
-        private readonly BehaviorSubject<YouTubeDLInstanceStatus> _whenDownloadStatusChanged_behaviorSubject;
+        public YouTubeDLInstanceStatus Status
+        {
+            get { return this._whenStatusChanged_behaviorSubject.Value; }
+            private set
+            {
+                // TODO: validate status sequence. e.g. cannot set ready after executing
+                this._whenStatusChanged_behaviorSubject.OnNext(value);
+
+                if (this.Status == YouTubeDLInstanceStatus.Killed
+                    || this.Status == YouTubeDLInstanceStatus.Failed
+                    || this.Status == YouTubeDLInstanceStatus.Completed)
+                {
+                    this._whenStatusChanged_behaviorSubject.OnCompleted();
+                }
+            }
+        }
+        private readonly BehaviorSubject<YouTubeDLInstanceStatus> _whenStatusChanged_behaviorSubject;
         public IObservable<YouTubeDLInstanceStatus> WhenStatusChanged { get; }
 
         private readonly ISourceList<string> _outputsSourceList;
-        public IObservableList<string> Status => this._outputsSourceList.AsObservableList();
+        public IObservableList<string> Outputs => this._outputsSourceList.AsObservableList();
         private readonly ISourceList<string> _errorsSourceList;
         public IObservableList<string> Errors => this._errorsSourceList.AsObservableList();
 

@@ -17,13 +17,7 @@ namespace youtube_dl.WPF.Core.Services
             var dummyEntries = new[]
             {
                 new DownloadCommand("https://www.youtube.com/watch?v=WeHEhrj6vEc"
-                , new DownloadCommandOptions(
-                    //DownloadMode.AudioVideo
-                    //new AudioFormat(), new VideoFormat()
-                    new IYouTubeDLQualitySelector[] {
-                        new GenericQualitySelector(YouTubeDLQuality.Worst)
-                    }
-                )),
+                , new DownloadCommandOptions()),
                 new DownloadCommand(
                     //new []
                     //{
@@ -31,12 +25,7 @@ namespace youtube_dl.WPF.Core.Services
                         //, "https://www.youtube.com/watch?v=HGlIImajcRI"
                         //, "https://www.youtube.com/watch?v=tsPxaAVg584"
                     //}
-                    , new DownloadCommandOptions(
-                        //DownloadMode.AudioOnly)
-                    
-                    new IYouTubeDLQualitySelector[] {
-                        new GenericQualitySelector(YouTubeDLQuality.Best)
-                    })                    ),
+                    , new DownloadCommandOptions()),
             };
 
             this.Enqueue(dummyEntries);

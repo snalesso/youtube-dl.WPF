@@ -31,8 +31,8 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             this.UpdateDependencies.DisposeWith(this._disposables);
 
             this.OpenDownloadsFolder = ReactiveCommand.Create(() => this._fileSystemService.OpenFolder(this._youTubeDL.DownloadsFolderLocation.LocalPath));
-            this.OpenDownloadsFolder.ThrownExceptions.Subscribe(ex => Console.WriteLine($"++ThrownExceptions: {ex.ToString()}")).DisposeWith(this._disposables);
-            this.OpenDownloadsFolder.Where(couldOpenFolder => !couldOpenFolder).Subscribe(couldOpenFolder => Console.WriteLine("Downloads folder not found"));
+            this.OpenDownloadsFolder.ThrownExceptions.Subscribe(ex => Console.WriteLine($"++ThrownExceptions: {ex}")).DisposeWith(this._disposables);
+            this.OpenDownloadsFolder.Where(couldOpenFolder => !couldOpenFolder).Subscribe(couldOpenFolder => Console.WriteLine($"Folder not found: {couldOpenFolder}"));
             this.OpenDownloadsFolder.DisposeWith(this._disposables);
 
             this.NavigateToYoutubeDLDocumentationWebPage = ReactiveCommand.Create(() => this._fileSystemService.NavigateUrl(YouTubeDL.DocumentationWebPage));

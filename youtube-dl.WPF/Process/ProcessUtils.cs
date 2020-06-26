@@ -152,6 +152,9 @@ namespace youtube_dl.WPF.Process
             var standardErrorResults = new TaskCompletionSource<string[]>();
             process.ErrorDataReceived += (sender, args) =>
             {
+#if DEBUG
+                Console.WriteLine("+++ YT-DL - Error: " + args.Data?.ToString());
+#endif
                 if (args.Data != null)
                     standardErrorHandler(args.Data);
                 else

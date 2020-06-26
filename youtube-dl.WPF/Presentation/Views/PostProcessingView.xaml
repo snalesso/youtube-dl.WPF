@@ -1,0 +1,100 @@
+﻿<UserControl
+    x:Class="youtube_dl.WPF.Presentation.Views.PostProcessingView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:Converters="clr-namespace:youtube_dl.WPF.Presentation.Converters"
+    xmlns:Core="clr-namespace:youtube_dl.WPF.Core"
+    xmlns:Daedalus_UI_Converters="clr-namespace:Daedalus.UI.Converters;assembly=Daedalus.UI"
+    xmlns:DesignTimeViewModels="clr-namespace:youtube_dl.WPF.Presentation.ViewModels.DesignTime"
+    xmlns:MarkupExtensions="clr-namespace:youtube_dl.WPF.Presentation.MarkupExtensions"
+    xmlns:MaterialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:System="clr-namespace:System;assembly=mscorlib"
+    xmlns:Views="clr-namespace:youtube_dl.WPF.Presentation.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:fa5="http://schemas.fontawesome.com/icons/"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DataContext="{d:DesignInstance Type=DesignTimeViewModels:DesignTimePostProcessingViewModel,
+                                     IsDesignTimeCreatable=False}"
+    mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Converters:DownloadModeToPackIconKindConverter x:Key="DownloadModeToPackIconKindConverter" />
+        <Converters:ComparisonConverter x:Key="ComparisonConverter" />
+        <Daedalus_UI_Converters:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <Daedalus_UI_Converters:BooleanInverter x:Key="BooleanInverter" />
+    </UserControl.Resources>
+
+    <!--<Grid Grid.Row="2" VerticalAlignment="Center">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition Width="8" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>-->
+
+    <!--<StackPanel Orientation="Horizontal">
+
+            <RadioButton
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                IsChecked="{Binding Path=SelectedDownloadMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static Core:DownloadMode.AudioOnly}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource MaterialDesignTabRadioButton}"
+                ToolTip="Download as audio">
+                <RadioButton.Content>
+                    <MaterialDesign:PackIcon
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Kind="Music" />
+                </RadioButton.Content>
+            </RadioButton>
+            <RadioButton
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                IsChecked="{Binding Path=SelectedDownloadMode, Converter={StaticResource ComparisonConverter}, ConverterParameter={x:Static Core:DownloadMode.AudioVideo}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource MaterialDesignTabRadioButton}"
+                ToolTip="Download as video">
+                <RadioButton.Content>
+                    <MaterialDesign:PackIcon
+                        HorizontalAlignment="Left"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        Kind="Video" />
+                </RadioButton.Content>
+            </RadioButton>
+
+        </StackPanel>-->
+
+    <!--<GroupBox Header="Convert" Style="{StaticResource   MaterialDesignCardGroupBox}">-->
+
+    <StackPanel Grid.Column="2" Orientation="Horizontal">
+
+        <ComboBox
+            Width="Auto"
+            MinWidth="120"
+            VerticalAlignment="Stretch"
+            VerticalContentAlignment="Center"
+            MaterialDesign:TextFieldAssist.HasClearButton="True"
+            MaterialDesign:HintAssist.Hint="Default"
+            ItemsSource="{Binding AudioCodecOptions}"
+            SelectedItem="{Binding SelectedAudioCodec}"
+            Visibility="{Binding IsAudioCodecSelectable, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+        <ComboBox
+            Width="Auto"
+            MinWidth="120"
+            VerticalAlignment="Stretch"
+            VerticalContentAlignment="Center"
+            MaterialDesign:TextFieldAssist.HasClearButton="True"
+            MaterialDesign:HintAssist.Hint="Default"
+            ItemsSource="{Binding VideoContainerFormatOptions}"
+            SelectedItem="{Binding SelectedVideoContainerFormat}"
+            Visibility="{Binding IsVideoContainerFormatSelectable, Converter={StaticResource BooleanToVisibilityConverter}}" />
+
+    </StackPanel>
+
+    <!--</GroupBox>-->
+    <!--</Grid>-->
+
+</UserControl>

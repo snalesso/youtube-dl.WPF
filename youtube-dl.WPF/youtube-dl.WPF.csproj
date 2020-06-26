@@ -174,17 +174,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Core\AudioVideoQualitySelector.cs" />
     <Compile Include="Core\DownloadCommandOptionsPreset.cs" />
     <Compile Include="Core\DownloadService.cs" />
     <Compile Include="Core\Entity`1.cs" />
+    <Compile Include="Core\Filter.cs" />
     <Compile Include="Core\Format.cs" />
+    <Compile Include="Core\GenericQualitySelector.cs" />
     <Compile Include="Core\HashCodeHelper.cs" />
     <Compile Include="Core\AudioCodec.cs" />
     <Compile Include="Core\IYouTubeDLCommand.cs" />
+    <Compile Include="Core\LiteralComparison.cs" />
+    <Compile Include="Core\LiteralField.cs" />
+    <Compile Include="Core\LiteralFilter.cs" />
+    <Compile Include="Core\NumericComparisons.cs" />
+    <Compile Include="Core\NumericField.cs" />
+    <Compile Include="Core\NumericFilter.cs" />
+    <Compile Include="Core\QualitySelectorMixins.cs" />
     <Compile Include="Core\Queue\EnqueuedDownloadCommand.cs" />
     <Compile Include="Core\DownloadCommandOptions.cs" />
     <Compile Include="Core\AppSettings.cs" />
     <Compile Include="Core\UpdateCommand.cs" />
+    <Compile Include="Core\VideoFilters.cs" />
+    <Compile Include="Core\Workarounds.cs" />
     <Compile Include="Core\YouTubeDL+BusyManager.cs" />
     <Compile Include="Core\URLsHelper.cs" />
     <Compile Include="Core\VideoResolution.cs" />
@@ -192,8 +204,9 @@
     <Compile Include="Core\VideoResolutionWidth.cs" />
     <Compile Include="Core\YouTubeDLCommandType.cs" />
     <Compile Include="Core\YouTubeDLInstanceHandler.cs" />
+    <Compile Include="Core\YouTubeDLInstanceHandlerMixins.cs" />
     <Compile Include="Core\YouTubeDLParamKeysAttribute.cs" />
-    <Compile Include="Core\YouTubeDLQualityFilter.cs" />
+    <Compile Include="Core\IYouTubeDLQualitySelector.cs" />
     <Compile Include="Presentation\Behaviors\DependencyObjectExtensions.cs" />
     <Compile Include="Presentation\Controls\ResettableComboBox.xaml.cs">
       <DependentUpon>ResettableComboBox.xaml</DependentUpon>
@@ -201,6 +214,7 @@
     <Compile Include="Presentation\Converters\ComparisonConverter.cs" />
     <Compile Include="Presentation\Converters\IEnumerableOfStringsJoiner.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeNewDownloadCommandViewModel.cs" />
+    <Compile Include="Presentation\ViewModels\DesignTime\DesignTimePostProcessingViewModel.cs" />
     <Compile Include="Presentation\ViewModels\NewDownloadCommandViewModel.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DummyFileSystemService.cs" />
     <Compile Include="Core\FFmpeg.cs" />
@@ -226,6 +240,7 @@
     <Compile Include="Presentation\ViewModels\DependenciesCheckerViewModel.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeDependenciesCheckerViewModel.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeUtilsViewModel.cs" />
+    <Compile Include="Presentation\ViewModels\PostProcessingViewModel.cs" />
     <Compile Include="Presentation\Views\NewDownloadCommandView.xaml.cs">
       <DependentUpon>NewDownloadCommandView.xaml</DependentUpon>
     </Compile>
@@ -237,6 +252,9 @@
     </Compile>
     <Compile Include="Presentation\Views\DownloadView.xaml.cs">
       <DependentUpon>DownloadView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Presentation\Views\PostProcessingView.xaml.cs">
+      <DependentUpon>PostProcessingView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Presentation\Views\UtilsView.xaml.cs">
       <DependentUpon>UtilsView.xaml</DependentUpon>
@@ -266,6 +284,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Presentation\Views\DownloadView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\Views\PostProcessingView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

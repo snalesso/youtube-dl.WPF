@@ -4,6 +4,7 @@ using System.Reactive;
 using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
+using System.Threading.Tasks;
 using DynamicData;
 using ReactiveUI;
 
@@ -56,7 +57,7 @@ namespace youtube_dl.WPF.Core.Queue
                     {
                         if (this.AreDownloadsAutomaticallyStarted && this._youTubeDL.ExecutingInstances.Count < this.MaxConcurrentInstancesCount)
                         {
-                            await this._youTubeDL.ExecuteAsync(this.Dequeue());
+                            await this._youTubeDL.ExecuteCommandAsync(this.Dequeue());
                         }
                     })
                     .DisposeWith(this._disposables);
@@ -113,6 +114,12 @@ namespace youtube_dl.WPF.Core.Queue
         public void Remove(DownloadCommand entry)
         {
             this._queueEntries.Edit(list => list.Remove(entry));
+        }
+
+        public Task StartDownloadsAsync()
+        {
+            var comm = this.Dequeue();
+            return this._youTubeDL.ExecuteCommandAsync(comm);
         }
 
         #region IDisposable

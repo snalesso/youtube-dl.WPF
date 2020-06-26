@@ -56,5 +56,10 @@ namespace youtube_dl.WPF.Core
             yield return this.URL;
             yield return this.Options;
         }
+
+        public string Serialize()
+        {
+            return $"{this.URL} {this.Options.Serialize()}";
+        }
     }
 }

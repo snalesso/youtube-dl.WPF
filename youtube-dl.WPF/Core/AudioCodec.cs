@@ -9,8 +9,6 @@ namespace youtube_dl.WPF.Core
 {
     public enum AudioCodec
     {
-        Best,
-
         MP3,
         AAC,
         FLAC,

@@ -4,7 +4,7 @@
     {
         Ready,
         Executing,
-        Canceled,
+        Killed,
         Completed,
         Failed
     }

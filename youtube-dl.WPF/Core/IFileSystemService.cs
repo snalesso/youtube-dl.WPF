@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace youtube_dl.WPF.Core
 {
-    // add IsBusy
+    // TODO: add IsBusy
 
     public interface IFileSystemService
     {

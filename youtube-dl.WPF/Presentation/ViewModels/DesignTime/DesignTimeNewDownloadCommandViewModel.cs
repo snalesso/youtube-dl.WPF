@@ -9,7 +9,9 @@ namespace youtube_dl.WPF.Presentation.ViewModels.DesignTime
 {
     class DesignTimeNewDownloadCommandViewModel : NewDownloadCommandViewModel
     {
-        public DesignTimeNewDownloadCommandViewModel() : base(DummyDownloadCommandsQueue.Instance)
+        public DesignTimeNewDownloadCommandViewModel() : base(
+            DummyDownloadCommandsQueue.Instance,
+            _ => new DesignTimePostProcessingViewModel())
         {
         }
     }

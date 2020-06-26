@@ -1,17 +1,17 @@
-using Autofac;
-using Caliburn.Micro;
-using ReactiveUI;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Windows;
 using System.Windows.Threading;
+using Autofac;
+using Caliburn.Micro;
+using DynamicData.Binding;
+using ReactiveUI;
 using youtube_dl.WPF.Core;
 using youtube_dl.WPF.Core.History;
 using youtube_dl.WPF.Core.Queue;
-using youtube_dl.WPF.Core.Services;
 using youtube_dl.WPF.Presentation.Services;
 using youtube_dl.WPF.Presentation.ViewModels;
 using youtube_dl.WPF.Presentation.Views;
@@ -66,7 +66,7 @@ namespace youtube_dl.WPF.Presentation.Composition.Autofac
 
             //builder.RegisterModule<EventAggregationAutoSubscriptionModule>(); // TODO: review: automatic behavior with no counterpart for unsubscription
 
-            // CORE COMPONENTS
+            // SERVICES
 
             builder.Register<IWindowManager>(c => new CustomWindowManager()).InstancePerLifetimeScope();
 
@@ -76,39 +76,28 @@ namespace youtube_dl.WPF.Presentation.Composition.Autofac
             builder
                 .Register(ctx =>
                     new YouTubeDL(
-                        new Uri("file://youtube-dl/youtube-dl.exe"),
+                        new Uri(Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), "youtube-dl", "youtube-dl.exe")),
                         ctx.Resolve<IFileSystemService>()))
                 .InstancePerLifetimeScope();
 
-            // ViewModels
+            // PRESENTATION
 
-            //builder.RegisterType<AddDownloadQueueEntryViewModel>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<PostProcessingViewModel>().AsSelf().InstancePerLifetimeScope();
+            //builder
+            //    .Register(ctx =>
+            //        new PostProcessingViewModel(
+            //            ctx.Resolve<NewDownloadCommandViewModel>().WhenAny(x => x.SelectedDownloadMode, x => x.Value)))
+            //    .InstancePerLifetimeScope();
             builder.RegisterType<NewDownloadCommandViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DownloadQueueViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DownloadViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<UtilsViewModel>().AsSelf().InstancePerLifetimeScope();
-            builder.RegisterType<ShellViewModel>().AsSelf().InstancePerLifetimeScope();
-            //builder.Register<Func<ShellViewModel>>(ctx =>
-            //{
-            //    var ctxInternal = ctx.Resolve<IComponentContext>();
-            //    return () => new ShellViewModel(
-            //        ctxInternal.Resolve<IYouTubeDLService>(), 
-            //        ctxInternal.Resolve<AddDownloadQueueEntryViewModel>(), 
-            //        ctxInternal.Resolve<DownloadQueueViewModel>(),
-            //        ctxInternal.Resolve<DownloadViewModel>(),
-            //        ctxInternal.Resolve<UtilsViewModel>());
-            //}).AsSelf().InstancePerLifetimeScope();
 
-            //if (!Debugger.IsAttached)
-            //{
+            builder.RegisterType<ShellViewModel>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<ShellView>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
+
             builder.RegisterType<DependenciesCheckerViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DependenciesCheckerView>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
-            //}
-            // Views
-
-            builder.RegisterType<ShellView>().AsSelf().AsImplementedInterfaces().InstancePerLifetimeScope();
-            //builder.RegisterType<DownloadView>().As<IViewFor<DownloadViewModel>>().InstancePerLifetimeScope();
-            //builder.RegisterType<ShellView>().As<IViewFor<ShellViewModel>>().InstancePerLifetimeScope();
         }
 
         private IEnumerable<Assembly> assemblies;
