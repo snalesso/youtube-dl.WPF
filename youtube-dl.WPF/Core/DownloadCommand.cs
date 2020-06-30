@@ -48,8 +48,14 @@ namespace youtube_dl.WPF.Core
 
         public DownloadCommandOptions Options { get; }
         IYouTubeDLCommandOptions IYouTubeDLCommand.Options => this.Options;
-
         public YouTubeDLCommandType Type => YouTubeDLCommandType.Download;
+
+        public string Serialize()
+        {
+            return $"{this.URL} {this.Options.Serialize()}";
+        }
+
+        #region ValueObject
 
         protected override IEnumerable<object> GetValueIngredients()
         {
@@ -57,9 +63,6 @@ namespace youtube_dl.WPF.Core
             yield return this.Options;
         }
 
-        public string Serialize()
-        {
-            return $"{this.URL} {this.Options.Serialize()}";
-        }
+        #endregion
     }
 }

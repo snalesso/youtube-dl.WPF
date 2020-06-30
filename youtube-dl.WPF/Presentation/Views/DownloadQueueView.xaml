@@ -114,16 +114,49 @@
             ScrollViewer.VerticalScrollBarVisibility="Visible"
             SelectedItem="{Binding SelectedDownloadQueueEntryViewModel}"
             Style="{StaticResource MaterialDesignListBox}">
+
+            <!--<ListBox.ItemContainerStyle>
+                <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="{x:Type ListBoxItem}">
+                    <Setter Property="ContextMenu">
+                        <Setter.Value>
+                            <ContextMenu>
+                                <MenuItem Header="Remove">
+                                    <MenuItem.Icon>
+                                        <MaterialDesign:PackIcon Kind="Delete" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                                <Separator />
+                                <MenuItem Header="Show in folder" Command="{Binding }">
+                                    <MenuItem.Icon>
+                                        <MaterialDesign:PackIcon Kind="Folder" />
+                                    </MenuItem.Icon>
+                                </MenuItem>
+                            </ContextMenu>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+            </ListBox.ItemContainerStyle>-->
+
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
+                    <Grid Grid.IsSharedSizeScope="True">
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" SharedSizeGroup="Icon" />
                             <ColumnDefinition Width="8" />
-                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" SharedSizeGroup="URL" />
+                            <ColumnDefinition Width="8" />
+                            <ColumnDefinition Width="*" SharedSizeGroup="Output" />
                             <!--<ColumnDefinition Width="8" />
                             <ColumnDefinition Width="Auto" />-->
                         </Grid.ColumnDefinitions>
+
+                        <!--<Grid.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Remove" />
+                                <Separator />
+                                <MenuItem Header="Show in folder" />
+                            </ContextMenu>
+                        </Grid.ContextMenu>-->
 
                         <MaterialDesign:PackIcon
                             Grid.Column="0"
@@ -137,6 +170,11 @@
                             VerticalAlignment="Center"
                             Text="{Binding URL, Mode=OneTime}" />
 
+                        <TextBlock
+                            Grid.Column="4"
+                            VerticalAlignment="Center"
+                            Text="{Binding Output, Mode=OneTime}" />
+
                         <!--<Button IsHitTestVisible="False"
                             Grid.Column="4"
                             VerticalAlignment="Center"
@@ -149,6 +187,22 @@
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+
+            <!--<ListBox>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem" BasedOn="{StaticResource {x:Type ListBoxItem}}">
+                        <Setter Property="ContextMenu">
+                            <Setter.Value>
+                                <ContextMenu>
+                                    <MenuItem Header="Delete" Click="DeleteEvent"/>
+                                </ContextMenu>
+                            </Setter.Value>
+                        </Setter>
+                        <Setter Property="Content" Value="{Binding Path=EventName}"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>-->
+
         </ListBox>
 
         <!--<TreeView

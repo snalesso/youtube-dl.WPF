@@ -124,13 +124,13 @@
             </RadioButton>
 
         </Grid>-->
-            
+
         </Grid>
 
         <Grid Grid.Row="2" VerticalAlignment="Center">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="Auto" />
@@ -138,9 +138,15 @@
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock VerticalAlignment="Center" Text="Download" Grid.Column="0" />
+            <TextBlock
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Text="Download" />
 
-            <StackPanel VerticalAlignment="Center" Orientation="Horizontal" Grid.Column="2">
+            <StackPanel
+                Grid.Column="2"
+                VerticalAlignment="Center"
+                Orientation="Horizontal">
 
                 <RadioButton
                     Grid.Column="0"
@@ -176,17 +182,20 @@
             </StackPanel>
 
         </Grid>
-        
+
         <TextBlock Grid.Row="4" Text="{Binding QualitySelectorsString}" />
 
         <Grid Grid.Row="6">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="8"/>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
 
-            <TextBlock VerticalAlignment="Center" Grid.Column="0" Text="Convert to" />
+            <TextBlock
+                Grid.Column="0"
+                VerticalAlignment="Center"
+                Text="Convert to" />
 
             <Views:PostProcessingView
                 Grid.Column="2"

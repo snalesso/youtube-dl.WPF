@@ -123,7 +123,7 @@ namespace youtube_dl.WPF.Core
                 //return Task.FromResult(false);            
             }
         }
-        public async Task ExecuteCommandAsync(IYouTubeDLCommand command)
+        public async Task ExecuteAsync(IYouTubeDLCommand command)
         {
             // TODO: verify what happens when concurrently downloading same URL + same options multiple times
             var instanceHandler = new YouTubeDLInstanceHandler(this.ExeFileLocation, command);

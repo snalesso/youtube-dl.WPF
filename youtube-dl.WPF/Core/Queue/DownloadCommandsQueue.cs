@@ -5,6 +5,7 @@ using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 using DynamicData;
 using ReactiveUI;
 
@@ -53,14 +54,16 @@ namespace youtube_dl.WPF.Core.Queue
                     .Connect()
                     .WhereReasonsAre(new[] { ListChangeReason.Remove, ListChangeReason.RemoveRange, ListChangeReason.Refresh, ListChangeReason.Clear })
                     .Select(_ => Unit.Default))
-                    .Subscribe(async x =>
+                //.ObserveOn(RxApp.MainThreadScheduler)
+                .ObserveOnDispatcher()
+                .Subscribe(async x =>
+                {
+                    if (this.AreDownloadsAutomaticallyStarted && this._youTubeDL.ExecutingInstances.Count < this.MaxConcurrentInstancesCount)
                     {
-                        if (this.AreDownloadsAutomaticallyStarted && this._youTubeDL.ExecutingInstances.Count < this.MaxConcurrentInstancesCount)
-                        {
-                            await this._youTubeDL.ExecuteCommandAsync(this.Dequeue());
-                        }
-                    })
-                    .DisposeWith(this._disposables);
+                        await this.DownloadNextAsync();
+                    }
+                })
+                .DisposeWith(this._disposables);
         }
 
         public ushort MaxConcurrentInstancesCount { get; } = 5;
@@ -78,13 +81,13 @@ namespace youtube_dl.WPF.Core.Queue
 
         public void Enqueue(DownloadCommand entry)
         {
-            this._queueEntries.Add(entry);
+            this._queueEntries.Add(entry ?? throw new ArgumentNullException(nameof(entry)));
         }
         public void Enqueue(params DownloadCommand[] entries)
         {
-            foreach (var entry in entries)
+            foreach (var entry in entries ?? throw new ArgumentNullException(nameof(entries)))
             {
-                this._queueEntries.Add(entry);
+                this._queueEntries.Add(entry ?? throw new ArgumentNullException(nameof(entry)));
             }
         }
         public DownloadCommand Dequeue()
@@ -116,10 +119,16 @@ namespace youtube_dl.WPF.Core.Queue
             this._queueEntries.Edit(list => list.Remove(entry));
         }
 
-        public Task StartDownloadsAsync()
+        public Task DownloadNextAsync()
         {
             var comm = this.Dequeue();
-            return this._youTubeDL.ExecuteCommandAsync(comm);
+
+            if (comm != null)
+            {
+                return this._youTubeDL.ExecuteAsync(comm);
+            }
+
+            return Task.CompletedTask;
         }
 
         #region IDisposable

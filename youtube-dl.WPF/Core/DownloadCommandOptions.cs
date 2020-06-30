@@ -45,7 +45,7 @@ namespace youtube_dl.WPF.Core
         public IReadOnlyList<IYouTubeDLQualitySelector> QualitySelectors { get; }
 
         // FILESYSTEM
-        public string OutputFolderPath { get; } = Path.Combine("E:", "Downloads", "youtube-dl");
+        public string OutputFolderPath { get; } = Path.Combine("E" + Path.VolumeSeparatorChar + Path.DirectorySeparatorChar, "Downloads", YouTubeDL.OfficialName);
         public string OutputFileNameFormat { get; } = "%(title)s -- %(uploader)s -- %(id)s.%(ext)s";
 
         // DOWNLOAD
@@ -95,7 +95,10 @@ namespace youtube_dl.WPF.Core
                 // POST PORCESSING
 
                 // FFmpeg location for params that need it
-                $"--ffmpeg-location \"{Path.GetFullPath(this.FFmpegLocation)}\""
+                $"--ffmpeg-location \"{Path.GetFullPath(this.FFmpegLocation)}\"",
+
+                // VERBOSITY/SIMULATION
+                "--print-json"
             };
 
             // POST PROCESSING

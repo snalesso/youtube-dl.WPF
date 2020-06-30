@@ -90,6 +90,7 @@ namespace youtube_dl.WPF.Presentation.Composition.Autofac
             //    .InstancePerLifetimeScope();
             builder.RegisterType<NewDownloadCommandViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DownloadQueueViewModel>().AsSelf().InstancePerLifetimeScope();
+            builder.RegisterType<YouTubeDLInstanceHandlersViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<DownloadViewModel>().AsSelf().InstancePerLifetimeScope();
             builder.RegisterType<UtilsViewModel>().AsSelf().InstancePerLifetimeScope();
 

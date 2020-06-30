@@ -75,8 +75,8 @@
             MinWidth="120"
             VerticalAlignment="Stretch"
             VerticalContentAlignment="Center"
-            MaterialDesign:TextFieldAssist.HasClearButton="True"
             MaterialDesign:HintAssist.Hint="Default"
+            MaterialDesign:TextFieldAssist.HasClearButton="True"
             ItemsSource="{Binding AudioCodecOptions}"
             SelectedItem="{Binding SelectedAudioCodec}"
             Visibility="{Binding IsAudioCodecSelectable, Converter={StaticResource BooleanToVisibilityConverter}}" />
@@ -86,8 +86,8 @@
             MinWidth="120"
             VerticalAlignment="Stretch"
             VerticalContentAlignment="Center"
-            MaterialDesign:TextFieldAssist.HasClearButton="True"
             MaterialDesign:HintAssist.Hint="Default"
+            MaterialDesign:TextFieldAssist.HasClearButton="True"
             ItemsSource="{Binding VideoContainerFormatOptions}"
             SelectedItem="{Binding SelectedVideoContainerFormat}"
             Visibility="{Binding IsVideoContainerFormatSelectable, Converter={StaticResource BooleanToVisibilityConverter}}" />

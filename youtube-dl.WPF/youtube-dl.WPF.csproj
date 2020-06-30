@@ -175,11 +175,8 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Core\AudioVideoQualitySelector.cs" />
-    <Compile Include="Core\DownloadCommandOptionsPreset.cs" />
-    <Compile Include="Core\DownloadService.cs" />
     <Compile Include="Core\Entity`1.cs" />
     <Compile Include="Core\Filter.cs" />
-    <Compile Include="Core\Format.cs" />
     <Compile Include="Core\GenericQualitySelector.cs" />
     <Compile Include="Core\HashCodeHelper.cs" />
     <Compile Include="Core\AudioCodec.cs" />
@@ -205,6 +202,7 @@
     <Compile Include="Core\YouTubeDLCommandType.cs" />
     <Compile Include="Core\YouTubeDLInstanceHandler.cs" />
     <Compile Include="Core\YouTubeDLInstanceHandlerMixins.cs" />
+    <Compile Include="Core\YouTubeDLInstanceOutputData.cs" />
     <Compile Include="Core\YouTubeDLParamKeysAttribute.cs" />
     <Compile Include="Core\IYouTubeDLQualitySelector.cs" />
     <Compile Include="Presentation\Behaviors\DependencyObjectExtensions.cs" />
@@ -213,8 +211,10 @@
     </Compile>
     <Compile Include="Presentation\Converters\ComparisonConverter.cs" />
     <Compile Include="Presentation\Converters\IEnumerableOfStringsJoiner.cs" />
+    <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeYouTubeDLInstanceHandlersViewModel.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeNewDownloadCommandViewModel.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DesignTimePostProcessingViewModel.cs" />
+    <Compile Include="Presentation\ViewModels\YouTubeDLInstanceHandlersViewModel.cs" />
     <Compile Include="Presentation\ViewModels\NewDownloadCommandViewModel.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DummyFileSystemService.cs" />
     <Compile Include="Core\FFmpeg.cs" />
@@ -241,6 +241,10 @@
     <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeDependenciesCheckerViewModel.cs" />
     <Compile Include="Presentation\ViewModels\DesignTime\DesignTimeUtilsViewModel.cs" />
     <Compile Include="Presentation\ViewModels\PostProcessingViewModel.cs" />
+    <Compile Include="Presentation\ViewModels\YouTubeDLInstanceHandlerViewModel.cs" />
+    <Compile Include="Presentation\Views\YouTubeDLInstanceHandlersView.xaml.cs">
+      <DependentUpon>YouTubeDLInstanceHandlersView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Presentation\Views\NewDownloadCommandView.xaml.cs">
       <DependentUpon>NewDownloadCommandView.xaml</DependentUpon>
     </Compile>
@@ -268,6 +272,10 @@
     <Compile Include="Presentation\ViewModels\ShellViewModel.cs" />
     <Compile Include="Presentation\ViewModels\UtilsViewModel.cs" />
     <Page Include="Presentation\Controls\ResettableComboBox.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Presentation\Views\YouTubeDLInstanceHandlersView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

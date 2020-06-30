@@ -8,12 +8,14 @@ using System.Reactive.Subjects;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media.TextFormatting;
 using DynamicData;
+using ReactiveUI;
 using youtube_dl.WPF.Process;
 
 namespace youtube_dl.WPF.Core
 {
-    public class YouTubeDLInstanceHandler : IDisposable
+    public class YouTubeDLInstanceHandler : /*ReactiveObject,*/ IDisposable
     {
         //private readonly DownloadCommandOptions _downloadOptions;
         private readonly Uri _youtubeDlExeFilePath;
@@ -26,14 +28,26 @@ namespace youtube_dl.WPF.Core
             this._youtubeDlExeFilePath = youtubeDlExeFilePath ?? throw new ArgumentNullException(nameof(youtubeDlExeFilePath));
             this.Command = command ?? throw new ArgumentNullException(nameof(command));
 
+            this._outputData_BehaviorSubject = new BehaviorSubject<YouTubeDLInstanceOutputData>(null).DisposeWith(this._disposables);
             this._outputsSourceList = new SourceList<string>().DisposeWith(this._disposables);
+            this._outputsSourceList
+               .Connect()
+               .ToCollection()
+               .ObserveOnDispatcher()
+               .Subscribe(outputs =>
+               {
+                   var lastOrDefault = outputs.LastOrDefault();
+                   if (lastOrDefault != null)
+                   {
+                       this.OutputData = new YouTubeDLInstanceOutputData(lastOrDefault);
+                   }                   
+               })
+               .DisposeWith(this._disposables);
             this._errorsSourceList = new SourceList<string>().DisposeWith(this._disposables);
 
             this._whenStatusChanged_behaviorSubject = new BehaviorSubject<YouTubeDLInstanceStatus>(YouTubeDLInstanceStatus.Ready).DisposeWith(this._disposables);
             this.WhenStatusChanged = this._whenStatusChanged_behaviorSubject.DistinctUntilChanged();
         }
-
-        public IYouTubeDLCommand Command { get; }
 
         // TODO: ensure, when process ends, all disposables linked to process life time get disposed and the object becomes "frozen"
         public Task ExecuteAsync(CancellationToken cancellationToken)
@@ -70,6 +84,22 @@ namespace youtube_dl.WPF.Core
         //    }
         //}
 
+        #region properties
+
+        public IYouTubeDLCommand Command { get; }
+
+        private readonly BehaviorSubject<YouTubeDLInstanceOutputData> _outputData_BehaviorSubject;
+        public YouTubeDLInstanceOutputData OutputData
+        {
+            get { return this._outputData_BehaviorSubject.Value; }
+            private set { this._outputData_BehaviorSubject.OnNext(value); }
+        }
+
+        //public DateTime PreparedDateTime { get; } = DateTime.Now;
+        //private ObservableAsPropertyHelper<DateTime?> _startDateTime_OAPH;
+        //public DateTime? StartDateTime { get; private set; }
+        //public DateTime? EndDateTime { get; }
+
         public YouTubeDLInstanceStatus Status
         {
             get { return this._whenStatusChanged_behaviorSubject.Value; }
@@ -93,6 +123,8 @@ namespace youtube_dl.WPF.Core
         public IObservableList<string> Outputs => this._outputsSourceList.AsObservableList();
         private readonly ISourceList<string> _errorsSourceList;
         public IObservableList<string> Errors => this._errorsSourceList.AsObservableList();
+
+        #endregion
 
         #region IDisposable
 

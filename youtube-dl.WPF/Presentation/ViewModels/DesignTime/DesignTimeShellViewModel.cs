@@ -13,6 +13,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels.DesignTime
             DummyYouTubeDL.Instance,
             new DesignTimeNewDownloadCommandViewModel(),
             new DesignTimeDownloadQueueViewModel(),
+            new DesignTimeYouTubeDLInstanceHandlersViewModel(),
             new DesignTimeDownloadViewModel(),
             new DesignTimeUtilsViewModel())
         {

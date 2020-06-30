@@ -3,6 +3,7 @@ using System.Reactive.Disposables;
 using System.Reflection;
 using Caliburn.Micro;
 using youtube_dl.WPF.Core;
+using youtube_dl.WPF.Presentation.Views;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
 {
@@ -15,6 +16,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             //AddDownloadQueueEntryViewModel addDownloadQueueEntryViewModel,
             NewDownloadCommandViewModel newDownloadCommandViewModel,
             DownloadQueueViewModel downloadQueueViewModel,
+            YouTubeDLInstanceHandlersViewModel executingCommandsViewModel,
             DownloadViewModel downloadViewModel,
             UtilsViewModel utilsViewModel)
         {
@@ -23,6 +25,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             //this.AddDownloadQueueEntryViewModel = addDownloadQueueEntryViewModel ?? throw new ArgumentNullException(nameof(addDownloadQueueEntryViewModel));
             this.NewDownloadCommandViewModel = newDownloadCommandViewModel ?? throw new ArgumentNullException(nameof(newDownloadCommandViewModel));
             this.DownloadQueueViewModel = downloadQueueViewModel ?? throw new ArgumentNullException(nameof(downloadQueueViewModel));
+            this.ExecutingCommandsViewModel = executingCommandsViewModel ?? throw new ArgumentNullException(nameof(executingCommandsViewModel));
             this.DownloadViewModel = downloadViewModel ?? throw new ArgumentNullException(nameof(downloadViewModel));
             this.UtilsViewModel = utilsViewModel ?? throw new ArgumentNullException(nameof(utilsViewModel));
 
@@ -38,6 +41,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         //public AddDownloadQueueEntryViewModel AddDownloadQueueEntryViewModel { get; }
         public NewDownloadCommandViewModel NewDownloadCommandViewModel { get; }
         public DownloadQueueViewModel DownloadQueueViewModel { get; }
+        public YouTubeDLInstanceHandlersViewModel ExecutingCommandsViewModel { get; }
         public DownloadViewModel DownloadViewModel { get; }
         public UtilsViewModel UtilsViewModel { get; }
     }

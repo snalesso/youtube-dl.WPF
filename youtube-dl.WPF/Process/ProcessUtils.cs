@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using youtube_dl.WPF.Core;
 
 namespace youtube_dl.WPF.Process
 {
@@ -137,28 +139,40 @@ namespace youtube_dl.WPF.Process
             var process = new System.Diagnostics.Process
             {
                 StartInfo = processStartInfo,
-                EnableRaisingEvents = true
+                EnableRaisingEvents = true,
+                //PriorityClass = ProcessPriorityClass.Normal,
             };
 
             var standardOutputResults = new TaskCompletionSource<string[]>();
             process.OutputDataReceived += (sender, args) =>
             {
                 if (args.Data != null)
+                {
                     standardOutputHandler(args.Data);
+#if DEBUG
+                    Console.WriteLine($"{YouTubeDL.OfficialName} - Output: " + args.Data);
+#endif
+                }
                 else
+                {
                     standardOutputResults.SetResult(null);
+                }
             };
 
             var standardErrorResults = new TaskCompletionSource<string[]>();
             process.ErrorDataReceived += (sender, args) =>
             {
-#if DEBUG
-                Console.WriteLine("+++ YT-DL - Error: " + args.Data?.ToString());
-#endif
                 if (args.Data != null)
+                {
                     standardErrorHandler(args.Data);
+#if DEBUG
+                    Console.WriteLine($"{YouTubeDL.OfficialName} - Error: " + args.Data);
+#endif
+                }
                 else
+                {
                     standardErrorResults.SetResult(null);
+                }
             };
 
             var processStartTime = new TaskCompletionSource<DateTime>();
@@ -204,6 +218,7 @@ namespace youtube_dl.WPF.Process
                 {
                     try
                     {
+                        // TODO: remove?
                         startTime = process.StartTime;
                     }
                     catch (Exception)
@@ -214,6 +229,7 @@ namespace youtube_dl.WPF.Process
 
                     processStartTime.SetResult(startTime);
 
+                    // TODO: begin before process.Start & stop if start fails?
                     process.BeginOutputReadLine();
                     process.BeginErrorReadLine();
                 }

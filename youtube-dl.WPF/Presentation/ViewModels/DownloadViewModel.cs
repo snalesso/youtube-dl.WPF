@@ -29,12 +29,12 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             this._fileSystemService = fileSystemService ?? throw new ArgumentNullException(nameof(fileSystemService));
 
             this._isAutoDownloadEnabled_OAPH = this._downloadCommandsQueue
-                .WhenAnyValue(x => x.AreDownloadsAutomaticallyStarted)
+                .WhenAreDownloadsAutomaticallyStartedChanged
                 .ToProperty(this, nameof(this.IsAutoDownloadEnabled))
                 .DisposeWith(this._disposables);
 
             this.StartDownload = ReactiveCommand.CreateFromTask(
-                () => this._downloadCommandsQueue.StartDownloadsAsync(),
+                () => this._downloadCommandsQueue.DownloadNextAsync(),
                 this._downloadCommandsQueue.Entries.CountChanged.Select(count => count != 0));
             this.StartDownload.ThrownExceptions.Subscribe(ex => { Console.WriteLine(ex.ToString()); throw ex; }).DisposeWith(this._disposables);
             this.StartDownload.DisposeWith(this._disposables);
@@ -53,7 +53,11 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         public bool IsDownloading => this._isDownloading_OAPH.Value;
 
         private ObservableAsPropertyHelper<bool> _isAutoDownloadEnabled_OAPH;
-        public bool IsAutoDownloadEnabled => this._isAutoDownloadEnabled_OAPH.Value;
+        public bool IsAutoDownloadEnabled
+        {
+            get => this._isAutoDownloadEnabled_OAPH.Value;
+            set => this._downloadCommandsQueue.AreDownloadsAutomaticallyStarted = value;
+        }
 
         public ReactiveCommand<Unit, Unit> StartDownload { get; }
         public ReactiveCommand<Unit, bool> OpenDownloadsFolder { get; }

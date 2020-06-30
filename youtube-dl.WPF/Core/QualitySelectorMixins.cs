@@ -23,7 +23,7 @@ namespace youtube_dl.WPF.Core
 
         public static string SerializeValue(this YouTubeDLQuality quality)
         {
-            return quality.ToString() ;
+            return quality.ToString();
         }
 
         //public static string Serialize<TField, TComparison>(this Filter<TField, TComparison> filter)
@@ -153,9 +153,9 @@ namespace youtube_dl.WPF.Core
                     var anf = avqs.AudioFilters_Numeric?.Values.Serialize();
 
                     return
-                        $"{aq}audio{anf}{alf}" +
+                        $"{vq}video{vnf}{vlf}" +
                         $"+" +
-                        $"{vq}video{vnf}{vlf}";
+                        $"{aq}audio{anf}{alf}";
 
 
                 case GenericQualitySelector gqs:

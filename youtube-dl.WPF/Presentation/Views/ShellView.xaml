@@ -32,6 +32,8 @@
             <RowDefinition Height="8" />
             <RowDefinition Height="*" />
             <RowDefinition Height="8" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="8" />
             <RowDefinition Height="Auto" />
             <RowDefinition Height="8" />
         </Grid.RowDefinitions>
@@ -56,8 +58,13 @@
             Grid.Column="1"
             DataContext="{Binding DownloadQueueViewModel}" />
 
-        <Views:DownloadView
+        <Views:YouTubeDLInstanceHandlersView
             Grid.Row="7"
+            Grid.Column="1"
+            DataContext="{Binding ExecutingCommandsViewModel}" />
+
+        <Views:DownloadView
+            Grid.Row="9"
             Grid.Column="1"
             DataContext="{Binding DownloadViewModel}" />
 

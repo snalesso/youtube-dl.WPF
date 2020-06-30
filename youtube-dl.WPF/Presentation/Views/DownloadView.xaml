@@ -23,16 +23,25 @@
 
         <Grid>
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="8" />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
+
+            <CheckBox
+                Content="Auto"
+                IsChecked="{Binding IsAutoDownloadEnabled}"
+                Style="{StaticResource MaterialDesignAccentCheckBox}" />
+
             <Button
+                Grid.Column="2"
                 Command="{Binding StartDownload}"
                 Content="Download all"
                 ToolTip="Download all queued items as a single batch" />
             <Button
-                Grid.Column="2"
+                Grid.Column="4"
                 VerticalAlignment="Center"
                 Command="{Binding OpenDownloadsFolder}"
                 ToolTip="Open downloads folder">

@@ -5,34 +5,33 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace youtube_dl.WPF.Core.History
 {
     public class DownloadHistoryEntry
     {
         public DownloadHistoryEntry(
-            DownloadCommand downloadable,
-            string downloadFilePath,
+            DownloadCommand command,
+            string downloadedFilePath,
             DateTime downloadedDateTime)
         {
-            if (string.IsNullOrWhiteSpace(downloadFilePath))
-                throw new ArgumentException($"{nameof(downloadFilePath)} cannot be null", downloadFilePath);
-
-            this.Downloadable = downloadable ?? throw new ArgumentNullException(nameof(downloadable));
-            this.DownloadFilePath = downloadFilePath;
+            this.Command = command ?? throw new ArgumentNullException(nameof(command));
+            this.DownloadedFilePath = !string.IsNullOrWhiteSpace(downloadedFilePath)
+                ? downloadedFilePath
+                : throw new ArgumentException($"{nameof(downloadedFilePath)} cannot be null", downloadedFilePath);
         }
 
         public DownloadHistoryEntry(
-            DownloadCommand downloadable,
+            DownloadCommand command,
             string downloadFilePath)
             : this(
-                  downloadable,
+                  command,
                   downloadFilePath,
                   DateTime.Now)
         { }
 
-        public DownloadCommand Downloadable { get; }
-        public string DownloadFilePath { get; }
+        public DownloadCommand Command { get; }
+        public string ErrorMessage { get; }
+        public string DownloadedFilePath { get; }
         public DateTime DownloadedDateTime { get; }
     }
 }
