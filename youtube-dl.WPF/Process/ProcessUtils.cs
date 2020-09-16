@@ -139,7 +139,7 @@ namespace youtube_dl.WPF.Process
             var process = new System.Diagnostics.Process
             {
                 StartInfo = processStartInfo,
-                EnableRaisingEvents = true,
+                EnableRaisingEvents = true
                 //PriorityClass = ProcessPriorityClass.Normal,
             };
 

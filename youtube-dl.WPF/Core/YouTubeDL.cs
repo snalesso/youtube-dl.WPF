@@ -174,10 +174,10 @@ namespace youtube_dl.WPF.Core
                 Arguments = arguments,
                 FileName = this.ExeFileLocation.LocalPath,
 #if DEBUG
-                CreateNoWindow = true
-#else
                 CreateNoWindow = false
-#endif
+#else
+                CreateNoWindow = true
+#endif                
             };
             var res = await ProcessUtils.RunAsync(psi);
 

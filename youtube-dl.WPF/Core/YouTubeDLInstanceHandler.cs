@@ -42,7 +42,7 @@ namespace youtube_dl.WPF.Core
                    if (lastOrDefault != null)
                    {
                        this.OutputData = new YouTubeDLInstanceOutputData(lastOrDefault);
-                   }                   
+                   }
                })
                .DisposeWith(this._disposables);
             this._errorsSourceList = new SourceList<string>().DisposeWith(this._disposables);
@@ -54,11 +54,16 @@ namespace youtube_dl.WPF.Core
         // TODO: ensure, when process ends, all disposables linked to process life time get disposed and the object becomes "frozen"
         public Task ExecuteAsync(CancellationToken cancellationToken)
         {
+            // TODO: too many ProcessStartInfo configs, evaluate launching this from YouTubeDL.ExecuteAsync
             var psi = new ProcessStartInfo()
             {
                 Arguments = this.Command.Serialize(),
                 FileName = this._youtubeDlExeFilePath.LocalPath,
+#if DEBUG
                 CreateNoWindow = false
+#else
+                CreateNoWindow = true
+#endif
             };
 
             this.Status = YouTubeDLInstanceStatus.Executing;
