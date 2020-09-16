@@ -174,7 +174,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Core\AudioVideoQualitySelector.cs" />
+    <Compile Include="Core\VideoAudioQualitySelector.cs" />
     <Compile Include="Core\Entity`1.cs" />
     <Compile Include="Core\Filter.cs" />
     <Compile Include="Core\GenericQualitySelector.cs" />

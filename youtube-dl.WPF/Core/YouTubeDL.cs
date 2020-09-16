@@ -147,6 +147,8 @@ namespace youtube_dl.WPF.Core
             instanceHandler
                 .WhenProcessEnded()
                 //.LastAsync(x =>
+                .ObserveOn(RxApp.MainThreadScheduler)
+                //.SubscribeOnDispatcher()
                 .Subscribe(x =>
                 {
                     exeLock.Dispose();

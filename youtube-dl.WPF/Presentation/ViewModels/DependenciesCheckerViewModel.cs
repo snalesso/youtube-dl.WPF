@@ -171,8 +171,8 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         {
             base.OnViewLoaded(view);
 
-            if (!Debugger.IsAttached)
-            {
+            //if (!Debugger.IsAttached)
+            //{
                 var isYTDLPresent = await this.CheckForYouTubeDLPresence.Execute();
                 if (isYTDLPresent)
                     await this.TryUpdateYouTubeDL.Execute();
@@ -187,7 +187,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                 {
                     throw new Exception("WHAT?");
                 }
-            }
+            //}
 
             this.SwitchToClient();
         }

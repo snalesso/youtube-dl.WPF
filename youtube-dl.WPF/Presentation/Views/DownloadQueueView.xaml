@@ -162,18 +162,29 @@
                             Grid.Column="0"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
+                            Background="Transparent"
                             Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}"
-                            Kind="{Binding DownloadMode, Converter={StaticResource DownloadModeToPackIconKindConverter}, Mode=OneTime}" />
+                            Kind="{Binding DownloadMode, Converter={StaticResource DownloadModeToPackIconKindConverter}, Mode=OneTime}"
+                            ToolTip="{Binding DownloadQueueEntry.Options.OutputAudioCodec}" />
 
                         <TextBlock
                             Grid.Column="2"
                             VerticalAlignment="Center"
                             Text="{Binding URL, Mode=OneTime}" />
 
-                        <TextBlock
+                        <!--<TextBlock Grid.Column="4" VerticalAlignment="Center">
+                            <Run Text="-&gt;" />
+                            <Run Text="{Binding Options.OutputAudioCodec, Mode=OneTime}" />
+                        </TextBlock>-->
+
+                        <MaterialDesign:PackIcon
                             Grid.Column="4"
+                            HorizontalAlignment="Center"
                             VerticalAlignment="Center"
-                            Text="{Binding Output, Mode=OneTime}" />
+                            Background="Transparent"
+                            Foreground="{Binding Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ListBoxItem}}}"
+                            Kind="Gear"
+                            ToolTip="{Binding DownloadQueueEntry.Options, Mode=OneTime}" />
 
                         <!--<Button IsHitTestVisible="False"
                             Grid.Column="4"

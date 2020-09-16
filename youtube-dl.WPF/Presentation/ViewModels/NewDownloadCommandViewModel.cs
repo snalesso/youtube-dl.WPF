@@ -55,7 +55,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                             this._downloadCommandsQueue.Enqueue(
                                 new DownloadCommand(
                                     clipboardUrl,
-                                    new DownloadCommandOptions()));
+                                    this.GetDownloadCommandOptions()));
                         }
                     }
                 });
@@ -70,7 +70,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
                         this._downloadCommandsQueue.Enqueue(
                             new DownloadCommand(
                                 url,
-                                new DownloadCommandOptions()));
+                                this.GetDownloadCommandOptions()));
                     }
                     this.Url = null;
                 },
@@ -121,9 +121,24 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         }
         public VideoContainerFormat? VideoContainerFormat { get; }
 
-        public IReadOnlyList<IYouTubeDLQualitySelector> QualitySelectors { get; } = Workarounds.DefaultYouTubeDLQualitySelectors.ToImmutableArray();
+        public IReadOnlyList<IYouTubeDLQualitySelector> QualitySelectors { get; }
+        //= new IYouTubeDLQualitySelector[]
+        //{
+        //    new VideoAudioQualitySelector(
+        //        videoQuality: YouTubeDLQuality.Best,
+        //        audioQuality: YouTubeDLQuality.Best),
+        //    new GenericQualitySelector(YouTubeDLQuality.Best),
+        //};
+        = Workarounds.DefaultYouTubeDLQualitySelectors.ToImmutableArray();
+
         [Obsolete]
         public string QualitySelectorsString => this.QualitySelectors?.Serialize();
+
+        private DownloadCommandOptions GetDownloadCommandOptions() =>
+            new DownloadCommandOptions(
+                qualitySelectors: this.QualitySelectors,
+                outputAudioCodec: this.PostProcessingViewModel.SelectedOutputAudioCodec,
+                videoContainerFormat: this.PostProcessingViewModel.SelectedVideoContainerFormat);
 
         public ReactiveCommand<Unit, string> ReadClipboard { get; }
         // TODO: this command duplicates implementation. Simplify.

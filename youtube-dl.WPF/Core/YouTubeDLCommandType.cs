@@ -1,5 +1,8 @@
-﻿namespace youtube_dl.WPF.Core
+﻿using System;
+
+namespace youtube_dl.WPF.Core
 {
+    [Obsolete]
     public enum YouTubeDLCommandType
     {
         Help,

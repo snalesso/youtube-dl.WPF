@@ -77,9 +77,9 @@
             VerticalContentAlignment="Center"
             MaterialDesign:HintAssist.Hint="Default"
             MaterialDesign:TextFieldAssist.HasClearButton="True"
-            ItemsSource="{Binding AudioCodecOptions}"
-            SelectedItem="{Binding SelectedAudioCodec}"
-            Visibility="{Binding IsAudioCodecSelectable, Converter={StaticResource BooleanToVisibilityConverter}}" />
+            ItemsSource="{Binding OutputAudioCodecOptions}"
+            SelectedItem="{Binding SelectedOutputAudioCodec}"
+            Visibility="{Binding IsOutputAudioCodecSelectable, Converter={StaticResource BooleanToVisibilityConverter}}" />
 
         <ComboBox
             Width="Auto"

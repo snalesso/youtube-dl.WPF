@@ -9,13 +9,14 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Media.TextFormatting;
+using Caliburn.Micro;
 using DynamicData;
 using ReactiveUI;
 using youtube_dl.WPF.Process;
 
 namespace youtube_dl.WPF.Core
 {
-    public class YouTubeDLInstanceHandler : /*ReactiveObject,*/ IDisposable
+    public class YouTubeDLInstanceHandler : PropertyChangedBase, IDisposable
     {
         //private readonly DownloadCommandOptions _downloadOptions;
         private readonly Uri _youtubeDlExeFilePath;
@@ -28,12 +29,13 @@ namespace youtube_dl.WPF.Core
             this._youtubeDlExeFilePath = youtubeDlExeFilePath ?? throw new ArgumentNullException(nameof(youtubeDlExeFilePath));
             this.Command = command ?? throw new ArgumentNullException(nameof(command));
 
-            this._outputData_BehaviorSubject = new BehaviorSubject<YouTubeDLInstanceOutputData>(null).DisposeWith(this._disposables);
+            //this._outputData_BehaviorSubject = new BehaviorSubject<YouTubeDLInstanceOutputData>(null).DisposeWith(this._disposables);
             this._outputsSourceList = new SourceList<string>().DisposeWith(this._disposables);
             this._outputsSourceList
                .Connect()
                .ToCollection()
-               .ObserveOnDispatcher()
+               //.ObserveOnDispatcher()
+               .ObserveOn(RxApp.TaskpoolScheduler)
                .Subscribe(outputs =>
                {
                    var lastOrDefault = outputs.LastOrDefault();
@@ -88,11 +90,14 @@ namespace youtube_dl.WPF.Core
 
         public IYouTubeDLCommand Command { get; }
 
-        private readonly BehaviorSubject<YouTubeDLInstanceOutputData> _outputData_BehaviorSubject;
+        //private readonly BehaviorSubject<YouTubeDLInstanceOutputData> _outputData_BehaviorSubject;
+        private YouTubeDLInstanceOutputData _outputData;
         public YouTubeDLInstanceOutputData OutputData
         {
-            get { return this._outputData_BehaviorSubject.Value; }
-            private set { this._outputData_BehaviorSubject.OnNext(value); }
+            //get { return this._outputData_BehaviorSubject.Value; }
+            //private set { this._outputData_BehaviorSubject.OnNext(value); }
+            get { return this._outputData; }
+            private set { this.Set(ref this._outputData, value); }
         }
 
         //public DateTime PreparedDateTime { get; } = DateTime.Now;

@@ -12,6 +12,7 @@ using youtube_dl.WPF.Core;
 
 namespace youtube_dl.WPF.Presentation.ViewModels
 {
+    // TODO: handle download interruption on close
     public class YouTubeDLInstanceHandlersViewModel : ReactiveScreen, IDisposable
     {
         #region constants & fields

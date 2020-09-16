@@ -21,6 +21,13 @@ namespace youtube_dl.WPF.Core
             return @enum.ToString().ToLowerInvariant();
         }
 
+        public static string SerializeName<T>(this Nullable<T> x)
+            where T : struct
+        {
+            var k = x.ToString().ToLowerInvariant();
+            return k;
+        }
+
         public static string SerializeValue(this YouTubeDLQuality quality)
         {
             return quality.ToString();
@@ -136,27 +143,47 @@ namespace youtube_dl.WPF.Core
             }
         }
 
-        public static string Serialize(this IYouTubeDLQualitySelector selector)
+        public static string Serialize(this IYouTubeDLQualitySelector selector, DownloadMode? downloadMode = null)
         {
             if (selector == null)
                 return null;
 
             switch (selector)
             {
-                case AudioVideoQualitySelector avqs:
-                    var vq = avqs.VideoQuality.SerializeName();
-                    var vlf = avqs.VideoFilters_Literal?.Values.Serialize();
-                    var vnf = avqs.VideoFilters_Numeric?.Values.Serialize();
+                case VideoAudioQualitySelector avqs:
 
-                    var aq = avqs.AudioQuality.SerializeName();
-                    var alf = avqs.AudioFilters_Literal?.Values.Serialize();
-                    var anf = avqs.AudioFilters_Numeric?.Values.Serialize();
+                    string videoFilter = null;
+                    string audioFilter = null;
 
-                    return
-                        $"{vq}video{vnf}{vlf}" +
-                        $"+" +
-                        $"{aq}audio{anf}{alf}";
+                    if (!downloadMode.HasValue || downloadMode.Value.HasFlag(DownloadMode.VideoOnly))
+                    {
+                        var vq = avqs.VideoQuality.HasValue ? avqs.VideoQuality.Value.SerializeName() : null;
+                        var vlf = avqs.VideoFilters_Literal?.Values.Serialize();
+                        var vnf = avqs.VideoFilters_Numeric?.Values.Serialize();
 
+                        videoFilter = $"{vq}{(vq != null ? "video" : string.Empty)}{vnf}{vlf}";
+                    }
+
+                    if (!downloadMode.HasValue || downloadMode.Value.HasFlag(DownloadMode.AudioOnly))
+                    {
+                        var aq = avqs.AudioQuality.SerializeName();
+                        var alf = avqs.AudioFilters_Literal?.Values.Serialize();
+                        var anf = avqs.AudioFilters_Numeric?.Values.Serialize();
+
+                        audioFilter = $"{aq}{(aq != null ? "audio" : string.Empty)}{anf}{alf}";
+                    }
+
+                    if (!string.IsNullOrWhiteSpace(videoFilter) && !string.IsNullOrWhiteSpace(audioFilter))
+                        return videoFilter + "+" + audioFilter;
+
+                    else if (!string.IsNullOrWhiteSpace(videoFilter))
+                        return videoFilter;
+
+                    else if (!string.IsNullOrWhiteSpace(audioFilter))
+                        return audioFilter;
+
+                    else
+                        return null;
 
                 case GenericQualitySelector gqs:
 
@@ -165,18 +192,17 @@ namespace youtube_dl.WPF.Core
                     var lf = gqs.Filters_Literal?.Values.Serialize();
                     return $"{q}{nf}{lf}";
 
-
                 default:
                     throw new NotSupportedException();
             }
         }
 
-        public static string Serialize(this IEnumerable<IYouTubeDLQualitySelector> selectors)
+        public static string Serialize(this IEnumerable<IYouTubeDLQualitySelector> selectors, DownloadMode? downloadMode = null)
         {
             if (selectors == null || !selectors.Any())
                 return null;
 
-            return string.Join("/", selectors.Select(s => s.Serialize()));
+            return string.Join("/", selectors.Select(s => s.Serialize(downloadMode)).RemoveNullOrWhitespaces());
         }
     }
 }

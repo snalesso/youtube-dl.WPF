@@ -24,12 +24,12 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             this._whenDownloadModeChanged = whenDownloadModeChanged ?? throw new ArgumentNullException(nameof(whenDownloadModeChanged));
 
             //this.VideoContainerFormats = new VideoContainerFormat?[] {null ,  }.ToImmutableArray();
-            this.AudioCodecOptions = new AudioCodec?[] { /*null*/ }.Concat(Enum.GetValues(typeof(AudioCodec)).Cast<AudioCodec?>()).ToImmutableArray();
+            this.OutputAudioCodecOptions = new AudioCodec?[] { /*null*/ }.Concat(Enum.GetValues(typeof(AudioCodec)).Cast<AudioCodec?>()).ToImmutableArray();
             this.VideoContainerFormatOptions = new VideoContainerFormat?[] { /*null */}.Concat(Enum.GetValues(typeof(VideoContainerFormat)).Cast<VideoContainerFormat?>()).ToImmutableArray();
 
-            this._isAudioCodecSelectable_OAPH = this._whenDownloadModeChanged
+            this._isOutputAudioCodecSelectable_OAPH = this._whenDownloadModeChanged
                 .Select(dm => dm == DownloadMode.AudioOnly)
-                .ToProperty(this, nameof(this.IsAudioCodecSelectable))
+                .ToProperty(this, nameof(this.IsOutputAudioCodecSelectable))
                 .DisposeWith(this._disposables);
             this._isVideoContainerFormatSelectable_OAPH = this._whenDownloadModeChanged
                 .Select(dm => dm.HasFlag(DownloadMode.VideoOnly))
@@ -50,22 +50,11 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         //    set { this.RaiseAndSetIfChanged(ref this._downloadMode, value); }
         //}
 
-        private readonly ObservableAsPropertyHelper<bool> _isAudioCodecSelectable_OAPH;
-        public bool IsAudioCodecSelectable => this._isAudioCodecSelectable_OAPH.Value;
-
         private readonly ObservableAsPropertyHelper<bool> _isVideoContainerFormatSelectable_OAPH;
         public bool IsVideoContainerFormatSelectable => this._isVideoContainerFormatSelectable_OAPH.Value;
 
-        // audio
-
-        public IReadOnlyList<AudioCodec?> AudioCodecOptions { get; }
-
-        private AudioCodec? _selectedAudioCodec;
-        public AudioCodec? SelectedAudioCodec
-        {
-            get { return this._selectedAudioCodec; }
-            set { this.RaiseAndSetIfChanged(ref this._selectedAudioCodec, value); }
-        }
+        private readonly ObservableAsPropertyHelper<bool> _isOutputAudioCodecSelectable_OAPH;
+        public bool IsOutputAudioCodecSelectable => this._isOutputAudioCodecSelectable_OAPH.Value;
 
         // video
 
@@ -76,6 +65,17 @@ namespace youtube_dl.WPF.Presentation.ViewModels
         {
             get { return this._selectedVideoContainerFormat; }
             set { this.RaiseAndSetIfChanged(ref this._selectedVideoContainerFormat, value); }
+        }
+
+        // audio
+
+        public IReadOnlyList<AudioCodec?> OutputAudioCodecOptions { get; }
+
+        private AudioCodec? _selectedOutputAudioCodec ;
+        public AudioCodec? SelectedOutputAudioCodec
+        {
+            get { return this._selectedOutputAudioCodec; }
+            set { this.RaiseAndSetIfChanged(ref this._selectedOutputAudioCodec, value); }
         }
 
         #endregion

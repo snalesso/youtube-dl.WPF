@@ -6,8 +6,10 @@ using System.Threading.Tasks;
 
 namespace youtube_dl.WPF.Core
 {
+    [Obsolete]
     public interface IYouTubeDLCommand
     {
+        [Obsolete]
         YouTubeDLCommandType Type { get; }
         IYouTubeDLCommandOptions Options { get; }
 

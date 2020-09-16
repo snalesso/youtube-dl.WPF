@@ -30,6 +30,7 @@ namespace youtube_dl.WPF.Presentation.ViewModels
             //    });
         }
 
+        // TODO: change name?
         public DownloadCommand DownloadQueueEntry { get; }
 
         public DownloadMode DownloadMode => this.DownloadQueueEntry.Options.DownloadMode;

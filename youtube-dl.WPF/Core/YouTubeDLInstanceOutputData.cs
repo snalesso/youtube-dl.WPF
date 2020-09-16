@@ -18,5 +18,10 @@ namespace youtube_dl.WPF.Core
         public uint FileSize_Bytes { get; set; }
         public uint DownloadSpeed_Bps { get; set; }
         public TimeSpan ETA { get; set; }
+
+        public override string ToString()
+        {
+            return this.OriginalString;
+        }
     }
 }

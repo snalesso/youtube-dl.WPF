@@ -35,9 +35,18 @@ namespace youtube_dl.WPF.Core
         //    this.VideoFormat = videoFormat;
         //}
 
-        public DownloadCommandOptions(IEnumerable<IYouTubeDLQualitySelector> qualitySelectors = null)
+        public DownloadCommandOptions(
+            IEnumerable<IYouTubeDLQualitySelector> qualitySelectors = null,
+            AudioCodec? outputAudioCodec = null,
+            VideoContainerFormat? videoContainerFormat = null,
+            string outputFolderPath = null,
+            string outputFileNameFormat =null)
         {
-            this.QualitySelectors = (qualitySelectors ?? Workarounds.DefaultYouTubeDLQualitySelectors).ToImmutableArray();
+            this.QualitySelectors = qualitySelectors?.ToImmutableArray();
+            this.OutputAudioCodec = outputAudioCodec;
+            this.VideoContainerFormat = videoContainerFormat;
+            this.OutputFolderPath = outputFolderPath ?? Path.Combine("E" + Path.VolumeSeparatorChar + Path.DirectorySeparatorChar, "Downloads", YouTubeDL.OfficialName);
+            this.OutputFileNameFormat = outputFileNameFormat ?? "%(title)s -- %(uploader)s -- %(id)s.%(ext)s";
         }
 
         // FORMAT
@@ -45,11 +54,12 @@ namespace youtube_dl.WPF.Core
         public IReadOnlyList<IYouTubeDLQualitySelector> QualitySelectors { get; }
 
         // FILESYSTEM
-        public string OutputFolderPath { get; } = Path.Combine("E" + Path.VolumeSeparatorChar + Path.DirectorySeparatorChar, "Downloads", YouTubeDL.OfficialName);
-        public string OutputFileNameFormat { get; } = "%(title)s -- %(uploader)s -- %(id)s.%(ext)s";
+        public string OutputFolderPath { get; } 
+        public string OutputFileNameFormat { get; }  
 
         // DOWNLOAD
         [YouTubeDLParamKeys("-r")]
+        // TODO: make nullable?
         public uint DownloadSpeedLimit_Bps { get; } = 0;
 
         // POST PROCESSING
@@ -82,6 +92,7 @@ namespace youtube_dl.WPF.Core
             }
         }
 
+        // TODO: cache
         public string Serialize()
         {
             // TODO: use a dictionary?
@@ -98,7 +109,7 @@ namespace youtube_dl.WPF.Core
                 $"--ffmpeg-location \"{Path.GetFullPath(this.FFmpegLocation)}\"",
 
                 // VERBOSITY/SIMULATION
-                "--print-json"
+                //"--print-json"
             };
 
             // POST PROCESSING
@@ -107,7 +118,7 @@ namespace youtube_dl.WPF.Core
             argsList.AddIf(this.EmbedThumbnail, "--embed-thumbnail");
             argsList.AddIf(this.EmbedSubs, "--embed-subs");
 
-            argsList.AddIf(this.QualitySelectors != null, $"--format \"{this.QualitySelectors.Serialize()}\"");
+            argsList.AddIf(this.QualitySelectors != null, $"--format \"{this.QualitySelectors.Serialize(this.DownloadMode)}\"");
 
             switch (this.DownloadMode)
             {
@@ -115,6 +126,7 @@ namespace youtube_dl.WPF.Core
                     //argsList.Add("--format bestaudio/best");
                     argsList.Add("--extract-audio");
                     argsList.AddIf(this.OutputAudioCodec.HasValue, $"--audio-format {this.OutputAudioCodec.ToString().ToLowerInvariant()}");
+                    argsList.AddIf(this.OutputAudioCodec.HasValue, "--audio-quality 0");
                     break;
 
                 case DownloadMode.AudioVideo:

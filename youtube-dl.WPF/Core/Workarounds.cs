@@ -8,7 +8,7 @@ namespace youtube_dl.WPF.Core
     {
         public static IEnumerable<IYouTubeDLQualitySelector> DefaultYouTubeDLQualitySelectors =>
             new IYouTubeDLQualitySelector[] {
-                new AudioVideoQualitySelector(
+                new VideoAudioQualitySelector(
                     YouTubeDLQuality.Best,
                     YouTubeDLQuality.Best,
                     videoFilters_Numeric: new Dictionary<NumericField, NumericFilter>
@@ -21,6 +21,7 @@ namespace youtube_dl.WPF.Core
                     {
                         { NumericField.height, new NumericFilter(NumericField.height, NumericComparisons.EqualsTo, ((int)VideoResolution.FHD.Height).ToString(), areUnknownIncluded: true) },
                     }),
+                // last as needed by sites != YouTube
                 new GenericQualitySelector(YouTubeDLQuality.Best)
             };
     }
